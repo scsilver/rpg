@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-export default class componentName extends Component {
+export default class Tooltop extends Component {
   render() {
     const { x, y, cell } = this.props;
     return (

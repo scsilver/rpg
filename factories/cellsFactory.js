@@ -213,7 +213,8 @@ const cellsPropertyGenerator = (cells, options) => {
     .map((cell, i, cells) => heightAverager(cell, cells, options))
     .map((cell, i, cells) => waterFiller(cell, cells, options))
     .map((cell, i, cells) => beachComber(cell, cells, options))
-    .map((cell, i, cells) => resourceFiller(cell, cells, options));
+    .map((cell, i, cells) => resourceFiller(cell, cells, options))
+    .map((cell, i, cells) => creatureFiller(cell, cells, options));
 };
 const cellPropertyGenerator = (cell, cells, options) => {
   return {
@@ -275,6 +276,12 @@ const resourceFiller = (cell, cells, options) => {
   return {
     ...cell,
     resources: options.resourcesPicker(cell.biome)
+  };
+};
+const creatureFiller = (cell, cells, options) => {
+  return {
+    ...cell,
+    creature: options.creaturePicker(cell.biome)
   };
 };
 export { cellsFactory, getCellByPosition };

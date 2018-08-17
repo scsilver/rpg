@@ -16,7 +16,7 @@ const resourceList = {
   fish: { ore: false, food: true, material: false },
   water: { ore: false, food: true, material: false }
 };
-
+const creatureOptions = ["snake", "fish, bird", "reindeer", "crab"];
 const oreOptions = ["iron", "diamond", "copper"];
 const resourceOptions = ["apple", "strawberry", "corn"];
 const biomeOptions = [
@@ -28,14 +28,30 @@ const biomeOptions = [
   "beach",
   "water"
 ];
+
 const biomeObjects = {
-  tundra: { resources: [] },
-  mountain: { resources: ["iron", "copper", "strawberry"] },
+  tundra: {
+    resources: [],
+    creatures: ["reindeer"]
+  },
+  mountain: {
+    resources: ["iron", "copper", "strawberry"],
+    creatures: ["bird", "snake"]
+  },
   forrest: { resources: ["wood", "apple"] },
-  desert: { resources: [] },
-  plain: { resources: ["corn"] },
-  beach: { resources: ["sand"] },
-  water: { resources: ["fish", "water"] }
+  desert: {
+    resources: [],
+    creatures: ["bird", "snake"]
+  },
+  plain: {
+    resources: ["corn"],
+    creatures: ["bird", "snake"]
+  },
+  beach: {
+    resources: ["sand"],
+    creatures: ["crab"]
+  },
+  water: { resources: ["fish", "water"], creatures: ["fish"] }
 };
 export default class GameWindow extends Component {
   constructor(props) {
@@ -52,7 +68,12 @@ export default class GameWindow extends Component {
               oreOptions[Math.floor(Math.random() * oreOptions.length)],
             biomePicker: () =>
               biomeOptions[Math.floor(Math.random() * biomeOptions.length)],
-            resourcesPicker: biome => biomeObjects[biome].resources
+            resourcesPicker: biome => biomeObjects[biome].resources,
+            creaturePicker: biome =>
+              !!biomeObjects[biome].creatures &&
+              biomeObjects[biome].creatures[
+                Math.floor(Math.random() * biomeObjects[biome].creatures.length)
+              ]
           },
           cells: []
         },

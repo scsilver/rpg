@@ -7,12 +7,7 @@ import Player from "./Player.jsx";
 export default class Grid extends Component {
   constructor() {
     super();
-    this.state = {
-      name: "React",
-      mouse: { x: 0, y: 0 },
-      cell: null,
-      tooltip: false
-    };
+    this.state = {};
   }
   static defaultProps = {
     world: { cells: [] }
@@ -32,15 +27,14 @@ export default class Grid extends Component {
       game: { world },
       game: { world: { cells, options } }
     } = this.props;
-    const cellSide = 20;
     const cellCount = options.amount;
     const sideCellCount = options.side;
     return (
       <div
         className="grid"
         style={{
-          width: cellSide * sideCellCount,
-          height: cellSide * sideCellCount
+          maxWidth: `70vh`,
+          minHeight: `70vh`
         }}
       >
         {cells.map(cell => {
@@ -53,11 +47,12 @@ export default class Grid extends Component {
               handleMouseOut={this.handleMouseOutCell}
               mouse={this.props.mouse}
               cell={cell}
+              options={options}
             />
           );
         })}
         {tooltip && <Tooltip {...mouse} cell={cell} />}
-        <Player {...game} />
+        <Player {...game} options={options} />
       </div>
     );
   }

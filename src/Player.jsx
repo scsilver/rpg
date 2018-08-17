@@ -7,11 +7,13 @@ export default class Player extends Component {
       <div
         style={{
           position: "relative",
-          top: `${-options.amount + player.position.y * options.side}px`,
-          left: `${player.position.x * options.side}px`,
-          width: "20px",
-          height: "20px",
-          backgroundColor: colors.primary,
+          top: `${70 / options.side * (player.position.y - options.side)}vh`,
+          left: `${70 / options.side * player.position.x}vh`,
+          minWidth: `${70 / options.side}vh`,
+          maxWidth: `${70 / options.side}vh`,
+          minHeight: `${70 / options.side}vh`,
+          maxHeight: `${70 / options.side}vh`,
+          backgroundColor: "purple",
           transform: `rotate(${player.position.orientationDeg}deg)`,
           textAlign: "center"
         }}

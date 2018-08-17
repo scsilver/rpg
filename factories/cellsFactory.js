@@ -4,24 +4,89 @@ const getSqrt = amount => Math.floor(Math.sqrt(amount));
 const percentTrue = percent => {
   return Math.random() <= percent;
 };
-const getAdjacentCells = (cell, cells, sideCells) => {
-  let adjacentCells = [];
-  let offsetArray = [-1, 0, 1];
-  offsetArray.map(xOffset => {
-    offsetArray.map(yOffset => {
-      if (
-        (xOffset == 0 && yOffset == 0) ||
-        cell.x + xOffset < 0 ||
-        cell.x + xOffset >= sideCells ||
-        cell.y + yOffset < 0 ||
-        cell.y + yOffset >= sideCells
-      ) {
-      } else {
-        adjacentCells.push(cells[cell.x + xOffset][cell.y + yOffset]);
-      }
+const getCellByPosition = (cell, cells, sideCells, { x, y }) => {
+  const id = x + sideCells * y;
+  return cells[id];
+};
+const getAdjacentCells = {
+  all: (cell, cells, sideCells) => {
+    const { x, y } = cell;
+    let adjacentCells = [];
+    let offsetArray = [-1, 0, 1];
+    offsetArray.map(xOffset => {
+      offsetArray.map(yOffset => {
+        if (
+          (xOffset == 0 && yOffset == 0) ||
+          x + xOffset < 0 ||
+          x + xOffset >= sideCells ||
+          y + yOffset < 0 ||
+          y + yOffset >= sideCells
+        ) {
+        } else {
+          const adjacentCell = getCellByPosition(cell, cells, sideCells, {
+            x: x + xOffset,
+            y: y + yOffset
+          });
+
+          adjacentCells.push(adjacentCell);
+        }
+      });
     });
-  });
-  return adjacentCells;
+    return adjacentCells;
+  },
+  perpendicular: (cell, cells, sideCells) => {
+    const { x, y } = cell;
+    let adjacentCells = [];
+    let offsetArray = [-1, 0, 1];
+    offsetArray.map(xOffset => {
+      offsetArray.map(yOffset => {
+        if (
+          (xOffset == 0 && yOffset == 0) ||
+          x + xOffset < 0 ||
+          x + xOffset >= sideCells ||
+          y + yOffset < 0 ||
+          y + yOffset >= sideCells ||
+          (yOffset != 0 && xOffset != 0)
+        ) {
+        } else {
+          const adjacentCell = getCellByPosition(cell, cells, sideCells, {
+            x: x + xOffset,
+            y: y + yOffset
+          });
+
+          adjacentCells.push(adjacentCell);
+        }
+      });
+    });
+    return adjacentCells;
+  },
+  corners: (cell, cells, sideCells) => {
+    const { x, y } = cell;
+    let adjacentCells = [];
+    let offsetArray = [-1, 0, 1];
+    offsetArray.map(xOffset => {
+      offsetArray.map(yOffset => {
+        if (
+          (xOffset == 0 && yOffset == 0) ||
+          x + xOffset < 0 ||
+          x + xOffset >= sideCells ||
+          y + yOffset < 0 ||
+          y + yOffset >= sideCells ||
+          (yOffset != 0 && xOffset == 0) ||
+          (xOffset != 0 && yOffset == 0)
+        ) {
+        } else {
+          const adjacentCell = getCellByPosition(cell, cells, sideCells, {
+            x: x + xOffset,
+            y: y + yOffset
+          });
+
+          adjacentCells.push(adjacentCell);
+        }
+      });
+    });
+    return adjacentCells;
+  }
 };
 const landScapeModules = {
   a: (cell, cells, sideCells) => {
@@ -84,7 +149,7 @@ const landScapeModules = {
       var multiple = 1;
       var chancePerAdjacent = 0.7;
       var chanceNoneAdjacent = 0.2;
-      getAdjacentCells(cell, cells, sideCells).map(cell => {
+      getAdjacentCells.all(cell, cells, sideCells).map(cell => {
         if (cell.hasOre) {
           sum = sum + chancePerAdjacent;
           multiple = multiple * chancePerAdjacent;
@@ -129,9 +194,26 @@ const cellsFactory = options => {
   });
   return cellsPropertyGenerator(cells, options);
 };
-
+const islandMaker = (cell, cells, options) => {
+  if (
+    cell.x == 0 ||
+    cell.x == options.side - 1 ||
+    cell.y == 0 ||
+    cell.y == options.side - 1
+  ) {
+    return { ...cell, height: baseHeight - 0.1, biome: "water" };
+  }
+  return cell;
+};
 const cellsPropertyGenerator = (cells, options) => {
-  return cells.map(cell => cellPropertyGenerator(cell, cells, options));
+  return cells
+    .map((cell, i, cells) => cellPropertyGenerator(cell, cells, options))
+    .map((cell, i, cells) => heightMaker(cell, cells, options))
+    .map((cell, i, cells) => islandMaker(cell, cells, options))
+    .map((cell, i, cells) => heightAverager(cell, cells, options))
+    .map((cell, i, cells) => waterFiller(cell, cells, options))
+    .map((cell, i, cells) => beachComber(cell, cells, options))
+    .map((cell, i, cells) => resourceFiller(cell, cells, options));
 };
 const cellPropertyGenerator = (cell, cells, options) => {
   return {
@@ -141,12 +223,59 @@ const cellPropertyGenerator = (cell, cells, options) => {
 };
 const cellLandscapeGenerator = (cell, cells, options) => {
   const landscapeSideCellCount = getSqrt(options.amount);
+  const biome = options.biomePicker();
   return {
     x: cell.id % landscapeSideCellCount,
     y: Math.floor(cell.id / landscapeSideCellCount),
     height: options.baseHeight || 0,
-    ore: options.orePicker() || "none",
-    biome: options.biomePicker() || "none"
+    biome
   };
 };
-export default cellsFactory;
+
+const heightMaker = (cell, cells, options) => {
+  return {
+    ...cell,
+    height:
+      options.baseHeight * options.heightVariance * (Math.random() - 0.4) +
+      options.baseHeight
+  };
+};
+
+const waterFiller = (cell, cells, options) => {
+  if (cell.height < options.baseHeight) {
+    return { ...cell, biome: "water" };
+  }
+  return cell;
+};
+
+const heightAverager = (cell, cells, options) => {
+  const adjacentCells = getAdjacentCells.all(cell, cells, options.side);
+  return {
+    ...cell,
+    height:
+      adjacentCells.map(cell => cell.height).reduce((curr, prev) => {
+        return prev + curr;
+      }, 0) / adjacentCells.length
+  };
+};
+
+const beachComber = (cell, cells, options) => {
+  if (
+    getAdjacentCells
+      .perpendicular(cell, cells, options.side)
+      .map(cell => cell.biome)
+      .includes("water") &&
+    cell.biome != "water"
+  ) {
+    return { ...cell, biome: "beach" };
+  }
+  return cell;
+};
+const resourceFiller = (cell, cells, options) => {
+  return {
+    ...cell,
+    resources: options.resourcesPicker(cell.biome)
+  };
+};
+export { cellsFactory, getCellByPosition };
+//height->water->beach->forrest

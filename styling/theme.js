@@ -9,7 +9,7 @@ const colors = {
   plain: "#FFB03B",
   beach: "#FFF0A5",
   water: "#046380",
-  forrest: "#468966",
+  forest: "#468966",
   tundra: "#F2EED3"
 };
 export default colors;

@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import colors from "../styling/theme.js";
+const degToRad = deg => Math.PI * deg / 180;
 export default class Player extends Component {
   render() {
     const { player, world: { cells, options } } = this.props;
+    const orientationRad = degToRad(player.position.orientationDeg);
     return (
       <div
         style={{
@@ -13,12 +15,14 @@ export default class Player extends Component {
           maxWidth: `${70 / options.side}vh`,
           minHeight: `${70 / options.side}vh`,
           maxHeight: `${70 / options.side}vh`,
-          backgroundColor: "purple",
-          transform: `rotate(${player.position.orientationDeg}deg)`,
-          textAlign: "center"
+          transform: `matrix(${Math.cos(orientationRad)}, ${Math.sin(
+            orientationRad
+          )}, ${Math.sin(orientationRad)}, ${-Math.cos(orientationRad)},0,0)`,
+          textAlign: "center",
+          verticalAlign: "center"
         }}
       >
-        ^
+        {player.emoji}
       </div>
     );
   }

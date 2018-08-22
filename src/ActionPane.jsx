@@ -14,7 +14,9 @@ export default class ActionPane extends Component {
           justifyContent: "center",
           alignItems: "center",
           padding: "20px",
-          boxSizing: "border-box"
+          boxSizing: "border-box",
+          position: "fixed",
+          top: 0
         }}
       >
         <Grid game={game} />

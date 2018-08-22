@@ -1,9 +1,9 @@
 import _ from "lodash";
+import { biomes, characters } from "../assets/characters.js";
+import { percentTrue } from "../src/helpers.js";
 const baseHeight = 10;
 const getSqrt = amount => Math.floor(Math.sqrt(amount));
-const percentTrue = percent => {
-  return Math.random() <= percent;
-};
+
 const getCellByPosition = (cell, cells, sideCells, { x, y }) => {
   const id = x + sideCells * y;
   return cells[id];
@@ -201,7 +201,7 @@ const islandMaker = (cell, cells, options) => {
     cell.y == 0 ||
     cell.y == options.side - 1
   ) {
-    return { ...cell, height: baseHeight - 0.1, biome: "water" };
+    return { ...cell, height: baseHeight - 0.1, biome: biomes.water };
   }
   return cell;
 };
@@ -212,9 +212,9 @@ const cellsPropertyGenerator = (cells, options) => {
     .map((cell, i, cells) => islandMaker(cell, cells, options))
     .map((cell, i, cells) => heightAverager(cell, cells, options))
     .map((cell, i, cells) => waterFiller(cell, cells, options))
-    .map((cell, i, cells) => beachComber(cell, cells, options))
-    .map((cell, i, cells) => resourceFiller(cell, cells, options))
-    .map((cell, i, cells) => creatureFiller(cell, cells, options));
+    .map((cell, i, cells) => beachComber(cell, cells, options));
+  // .map((cell, i, cells) => resourceFiller(cell, cells, options))
+  // .map((cell, i, cells) => creatureFiller(cell, cells, options));
 };
 const cellPropertyGenerator = (cell, cells, options) => {
   return {
@@ -244,7 +244,7 @@ const heightMaker = (cell, cells, options) => {
 
 const waterFiller = (cell, cells, options) => {
   if (cell.height < options.baseHeight) {
-    return { ...cell, biome: "water" };
+    return { ...cell, biome: biomes.water };
   }
   return cell;
 };
@@ -265,10 +265,10 @@ const beachComber = (cell, cells, options) => {
     getAdjacentCells
       .perpendicular(cell, cells, options.side)
       .map(cell => cell.biome)
-      .includes("water") &&
-    cell.biome != "water"
+      .filter(biome => biome == biomes.water) > 0 &&
+    cell.biome != biomes.water
   ) {
-    return { ...cell, biome: "beach" };
+    return { ...cell, biome: biomes.beach };
   }
   return cell;
 };
@@ -278,11 +278,20 @@ const resourceFiller = (cell, cells, options) => {
     resources: options.resourcesPicker(cell.biome)
   };
 };
-const creatureFiller = (cell, cells, options) => {
+const characterFiller = (cell, characters, options) => {
+  const charactersInCell = characters.filter(
+    character =>
+      character.position &&
+      cell.x == character.position.x &&
+      cell.y == character.position.y
+  );
   return {
     ...cell,
-    creature: options.creaturePicker(cell.biome)
+    character: charactersInCell.length > 0 ? charactersInCell[0] : {}
   };
 };
-export { cellsFactory, getCellByPosition };
+const charactersFiller = (cells, characters, options) => {
+  return cells.map(cell => characterFiller(cell, characters, options));
+};
+export { cellsFactory, getCellByPosition, percentTrue, charactersFiller };
 //height->water->beach->forrest

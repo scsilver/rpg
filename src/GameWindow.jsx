@@ -3,81 +3,60 @@ import Grid from "./Grid.jsx";
 import PropTypes from "prop-types";
 import ActionPane from "./ActionPane.jsx";
 import InfoPane from "./InfoPane.jsx";
-import { cellsFactory, getCellByPosition } from "../factories/cellsFactory.js";
-const resourceList = {
-  iron: { ore: true, food: false, material: false },
-  diamond: { ore: true, food: false, material: false },
-  copper: { ore: true, food: false, material: false },
-  apple: { ore: false, food: true, material: false },
-  strawberry: { ore: false, food: true, material: false },
-  corn: { ore: false, food: true, material: false },
-  wood: { ore: false, food: false, material: true },
-  sand: { ore: false, food: false, material: true },
-  fish: { ore: false, food: true, material: false },
-  water: { ore: false, food: true, material: false }
-};
-const creatureOptions = ["snake", "fish, bird", "reindeer", "crab"];
-const oreOptions = ["iron", "diamond", "copper"];
-const resourceOptions = ["apple", "strawberry", "corn"];
-const biomeOptions = [
-  "tundra",
-  "mountain",
-  "forrest",
-  "desert",
-  "plain",
-  "beach",
-  "water"
-];
+import FullScreenPane from "./FullScreenPane.jsx";
+import EffectsPane from "./EffectsPane.jsx";
+import NewGameWizard from "./NewGameWizard.jsx";
+import { objectToArray, percentTrue } from "../src/helpers";
+import { biomes, characters } from "../assets/characters.js";
+import {
+  cellsFactory,
+  getCellByPosition,
+  charactersFiller
+} from "../factories/cellsFactory.js";
 
-const biomeObjects = {
-  tundra: {
-    resources: [],
-    creatures: ["reindeer"]
-  },
-  mountain: {
-    resources: ["iron", "copper", "strawberry"],
-    creatures: ["bird", "snake"]
-  },
-  forrest: { resources: ["wood", "apple"] },
-  desert: {
-    resources: [],
-    creatures: ["bird", "snake"]
-  },
-  plain: {
-    resources: ["corn"],
-    creatures: ["bird", "snake"]
-  },
-  beach: {
-    resources: ["sand"],
-    creatures: ["crab"]
-  },
-  water: { resources: ["fish", "water"], creatures: ["fish"] }
-};
+import { characterSpawn } from "../factories/characterSpawn.js";
+import emojis from "../assets/emojis.js";
+import { gameControls, handleKeyPress } from "./gameWindowHandlers.js";
 export default class GameWindow extends Component {
   constructor(props) {
     super(props);
     this.state = {
       game: {
+        fullScreenPane: {
+          visible: false,
+          display: ""
+        },
+        effectsPane: {
+          red: false
+        },
+        newGameWizard: {
+          visible: false
+        },
         world: {
+          time: 0,
           options: {
+            startXp: 5,
             baseHeight: 1,
             heightVariance: 0.3,
-            amount: 400,
-            side: 20,
+            amount: 900,
+            side: 30,
             orePicker: () =>
               oreOptions[Math.floor(Math.random() * oreOptions.length)],
-            biomePicker: () =>
-              biomeOptions[Math.floor(Math.random() * biomeOptions.length)],
-            resourcesPicker: biome => biomeObjects[biome].resources,
-            creaturePicker: biome =>
-              !!biomeObjects[biome].creatures &&
-              biomeObjects[biome].creatures[
-                Math.floor(Math.random() * biomeObjects[biome].creatures.length)
-              ]
+            biomePicker: () => {
+              var newBiomes = biomes;
+              delete newBiomes.mountain;
+              return objectToArray(newBiomes).getRandomFromObject();
+            }
           },
-          cells: []
+          cells: [],
+          characters: []
         },
         player: {
+          mentalState: {
+            interaction: "Feeling fine...",
+            environment: "Blissful..."
+          },
+          emoji: emojis.player,
           inventory: [],
           name: "Scott",
           race: "jewBorne",
@@ -91,6 +70,7 @@ export default class GameWindow extends Component {
           position: { x: 1, y: 1, orientationDeg: "0", cell: {}, cellAhead: {} }
         }
       },
+
       cellHistory: [],
       saves: []
     };
@@ -98,225 +78,233 @@ export default class GameWindow extends Component {
   componentDidMount() {
     this.newWorld();
   }
-
-  newWorld = () =>
+  inputHandler = (e, inputKey) => {
+    this.setState({
+      game: {
+        ...this.state.game,
+        player: {
+          ...this.state.game.player,
+          [`${inputKey}`]: e.target.value
+        }
+      }
+    });
+  };
+  gameTimeHandler = () => {
+    const hungerRate = 0.01;
+    const newHunger = (this.state.game.player.hunger - hungerRate)
+      .toString()
+      .slice(
+        0,
+        Math.ceil(Math.log10(this.state.game.player.hunger)) -
+          Math.log10(hungerRate) +
+          1
+      );
+    const isStarved = newHunger < 0;
+    isStarved ? clearInterval(this.gameInterval) : null;
     this.setState({
       game: {
         ...this.state.game,
         world: {
           ...this.state.game.world,
-          cells: cellsFactory(this.state.game.world.options)
+          time: this.state.game.world.time + 0.5
+        },
+        player: {
+          ...this.state.game.player,
+          hunger: newHunger
+        },
+        fullScreenPane: {
+          visible: isStarved,
+          display: isStarved ? "You starved to death!" : null
+        },
+        effectsPane: {
+          hit: false
         }
       }
     });
-  newGame = player =>
+  };
+  handleFullScreenDisplayClick = () => {
+    this.setState({
+      game: {
+        ...this.state.game,
+
+        fullScreenPane: {
+          visible: false,
+          display: null
+        },
+        newGameWizard: {
+          visible: true
+        }
+      }
+    });
+  };
+  handleNewGameWizardClick = () => {
+    this.gameInterval = setInterval(this.gameTimeHandler, 500);
+    if (
+      !objectToArray(this.state.game.player).values.includes("") ||
+      !objectToArray(this.state.game.player).values.includes(0)
+    ) {
+      this.setState({
+        game: {
+          ...this.state.game,
+          newGameWizard: {
+            visible: false
+          }
+        }
+      });
+    }
+  };
+  newWorld = () => {
+    clearInterval(this.gameInterval);
+
+    const cells = cellsFactory(this.state.game.world.options);
+    const characters = characterSpawn(cells, this.state.game.world.options);
+    const characterCells = charactersFiller(
+      cells,
+      characters,
+      this.state.game.world.options
+    );
+
+    this.setState({
+      game: {
+        ...this.state.game,
+        fullScreenPane: {
+          visible: true,
+          type: "start",
+          display:
+            "You awake on a new world. There are beaches, forests and mountains full of new friends, adventures, and unspeakable dangers. Proceed with wonder and caution."
+        },
+        world: {
+          ...this.state.game.world,
+          cells: characterCells,
+          characters,
+          time: 0
+        }
+      }
+    });
+  };
+  newGame = player => {
+    debugger;
     this.setState({
       game: {
         world: {
           ...this.state.game.world,
-          cells: cellsFactory(this.state.game.world.options)
+          cells: cellsFactory(this.state.game.world.options),
+          time: 0
         },
-        player
+        ...this.state.game
       }
     });
+  };
   saveGame = () =>
     this.setState({ saves: [...this.state.saves, this.state.game] });
   loadGame = index => this.setState({ game: this.state.saves[index] });
-  gameControls = {
-    newWorld: this.newWorld,
-    newGame: this.newGame,
-    saveGame: this.saveGame,
-    loadGame: this.loadGame
+  checkCell = (
+    categoryName,
+    categoryOptions,
+    state,
+    movementCell,
+    forwardMovementCell,
+    orientationDeg
+  ) => {
+    return (
+      objectToArray(categoryOptions)
+        .values.map(
+          categoryOption =>
+            movementCell[categoryName].name == categoryOption.name
+              ? categoryOption.playerInteraction(
+                  state,
+                  movementCell,
+                  forwardMovementCell,
+                  orientationDeg
+                )
+              : false
+        )
+        .filter(option => option)[0] || state
+    );
+  };
+  checkDistantCell = (
+    categoryName,
+    categoryOptions,
+    state,
+    movementCell,
+    forwardMovementCell,
+    orientationDeg
+  ) => {
+    return (
+      objectToArray(categoryOptions)
+        .values.map(
+          categoryOption =>
+            forwardMovementCell[categoryName].name == categoryOption.name
+              ? categoryOption.playerDistantView(
+                  state,
+                  movementCell,
+                  forwardMovementCell,
+                  orientationDeg
+                )
+              : false
+        )
+        .filter(option => option)[0] || state
+    );
   };
 
-  handleMovePlayer = (xOffset, yOffset) => {
-    const {
-      position: { x, y, orientationDeg, movementCell }
-    } = this.state.game.player;
-    const { options } = this.state.game.world;
-    const movementOrientation = Math.atan2(xOffset, -yOffset) * 180 / Math.PI;
-
-    if (movementOrientation == orientationDeg) {
-      if (
-        0 <= xOffset + x &&
-        xOffset + x < options.side &&
-        0 <= yOffset + y &&
-        yOffset + y < options.side
-      ) {
-        const forwardMovementCell = getCellByPosition(
-          {},
-          this.state.game.world.cells,
-          options.side,
-          {
-            x: x + xOffset * 2,
-            y: y + yOffset * 2
-          }
-        );
-        const cellBiome = movementCell.biome;
-        if (["water", "mountain"].includes(cellBiome)) {
-          console.log("you cannot swim");
-        } else {
-          this.setState({
-            cellHistory: [
-              ...this.state.cellHistory,
-              this.state.game.player.cell
-            ],
-            game: {
-              ...this.state.game,
-              player: {
-                ...this.state.game.player,
-                hunger: this.state.game.player.hunger - 1,
-                position: {
-                  x: x + xOffset,
-                  y: y + yOffset,
-                  orientationDeg: movementOrientation,
-                  movementCell: forwardMovementCell,
-                  cell: movementCell
-                }
-              }
-            }
-          });
-        }
-      } else {
-        console.log("Player cannot move out of bounds");
-      }
-    } else {
-      const turnMovementCell = getCellByPosition(
-        {},
-        this.state.game.world.cells,
-        options.side,
-        {
-          x: x + xOffset,
-          y: y + yOffset
-        }
-      );
-      this.setState({
-        game: {
-          ...this.state.game,
-          player: {
-            ...this.state.game.player,
-            position: {
-              ...this.state.game.player.position,
-              movementCell: turnMovementCell,
-              orientationDeg: movementOrientation
-            }
-          }
-        },
-        cellHistory: [...this.state.cellHistory, this.state.game.player.cell]
-      });
-    }
+  checkMovementCell = args => {
+    const distantBiomeCheckState = this.checkDistantCell(
+      "biome",
+      args.biomes,
+      this.state,
+      args.movementCell,
+      args.forwardMovementCell,
+      args.orientationDeg
+    );
+    const biomeCheckState = this.checkCell(
+      "biome",
+      args.biomes,
+      distantBiomeCheckState,
+      args.movementCell,
+      args.forwardMovementCell,
+      args.orientationDeg
+    );
+    const characterCheckState = this.checkCell(
+      "character",
+      args.characters,
+      biomeCheckState,
+      args.movementCell,
+      args.forwardMovementCell,
+      args.orientationDeg
+    );
+    const characterAheadCheckState = this.checkDistantCell(
+      "character",
+      args.characters,
+      characterCheckState,
+      args.movementCell,
+      args.forwardMovementCell,
+      args.orientationDeg
+    );
+    return characterAheadCheckState;
   };
-  handleDig = () => {
-    const { player, player: { position: { cell: { ore } } } } = this.state.game;
-    if (oreOptions.includes(ore)) {
-      this.setState({
-        game: {
-          ...this.state.game,
-          player: {
-            ...player,
-            inventory: [
-              ...player.inventory,
-              ...resources.filter(resource => resourceList[resource].ore)
-            ]
-          }
-        }
-      });
-    }
-  };
-  handleHarvest = () => {
-    const {
-      player,
-      player: { position: { cell: { resources } } }
-    } = this.state.game;
-
-    this.setState({
-      game: {
-        ...this.state.game,
-        player: {
-          ...player,
-          inventory: [
-            ...player.inventory,
-            ...resources.filter(resource => resourceList[resource].food)
-          ]
-        }
-      }
-    });
-  };
-  handleGather = () => {
-    const {
-      player,
-      player: { position: { cell: { resources } } }
-    } = this.state.game;
-    this.setState({
-      game: {
-        ...this.state.game,
-        player: {
-          ...player,
-          inventory: [
-            ...player.inventory,
-            ...resources.filter(resource => resourceList[resource].material)
-          ]
-        }
-      }
-    });
-  };
-
-  handleAction = type => {
-    switch (type) {
-      case "dig":
-        this.handleDig();
-        break;
-      case "harvest":
-        this.handleHarvest();
-        break;
-      case "gather":
-        this.handleGather();
-        break;
-      default:
-        break;
-    }
-  };
-
-  handleKeyPress = event => {
-    switch (event.key) {
-      case "ArrowRight":
-        this.handleMovePlayer(1, 0);
-        break;
-
-      case "ArrowLeft":
-        this.handleMovePlayer(-1, 0);
-        break;
-
-      case "ArrowUp":
-        this.handleMovePlayer(0, -1);
-        break;
-
-      case "ArrowDown":
-        this.handleMovePlayer(0, 1);
-        break;
-      case "h":
-        this.handleAction("harvest");
-        break;
-      case "d":
-        this.handleAction("dig");
-        break;
-      case "r":
-        this.handleAction("read");
-        break;
-      case "g":
-        this.handleAction("gather");
-        break;
-
-      default:
-        break;
-    }
-  };
+  handleKeyPress = _.throttle(handleKeyPress.bind(this), 100, {
+    leading: true
+  });
   render() {
     const { data } = this.state;
     return (
       <div class="GameWindow" tabIndex="0" onKeyDown={this.handleKeyPress}>
-        <ActionPane {...this.state} gameControls={this.gameControls} />
-        <InfoPane {...this.state} gameControls={this.gameControls} />
+        <NewGameWizard
+          {...this.state.game}
+          inputHandler={this.inputHandler}
+          handleClick={this.handleNewGameWizardClick}
+        />
+        <FullScreenPane
+          {...this.state.game.fullScreenPane}
+          handleClick={this.handleFullScreenDisplayClick}
+        />
+
+        <EffectsPane {...this.state.game.effectsPane} />
+        <ActionPane
+          {...this.state}
+          gameControls={{ newWorld: this.newWorld }}
+        />
+        <InfoPane {...this.state} gameControls={{ newWorld: this.newWorld }} />
       </div>
     );
   }

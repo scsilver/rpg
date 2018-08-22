@@ -15,7 +15,11 @@ const resourceList = {
 };
 export default class Cell extends Component {
   render() {
-    const { cell, cell: { x, y, biome, resources }, options } = this.props;
+    const {
+      cell,
+      cell: { x, y, biome, resources, character },
+      options
+    } = this.props;
     const hue = 0;
     const sat = 100;
     const lum = Math.ceil((this.props.cell.height * 0.8) % 100);
@@ -25,16 +29,17 @@ export default class Cell extends Component {
         className={`cell x: ${x} y: ${y}`}
         style={{
           color: "white",
-          backgroundColor: colors[biome],
+          backgroundColor: colors[biome.name],
           minWidth: `${70 / options.side}vh`,
           maxWidth: `${70 / options.side}vh`,
           minHeight: `${70 / options.side}vh`,
           maxHeight: `${70 / options.side}vh`,
           display: "inline-block",
-          textAlign: "center"
+          textAlign: "center",
+          overflow: "hidden"
         }}
       >
-        {biome == "water" ? `~` : "__"}
+        {biome.emoji != "" ? biome.emoji : character.emoji}
       </div>
     );
   }

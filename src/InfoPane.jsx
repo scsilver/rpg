@@ -38,7 +38,7 @@ export default class InfoPane extends Component {
           bottom: 0
         }}
       >
-        <div style={{ flex: 1 }}>
+        <div style={{ flex: 3 }}>
           <PlayerStatus {...player} />
         </div>
         <div style={{ flex: 1 }}>
@@ -60,7 +60,8 @@ class PlayerStatus extends Component {
       agility,
       hunger,
       health,
-      position: { cell }
+      xp,
+      position: { cell, movementCell }
     } = this.props;
     return (
       <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -77,6 +78,7 @@ class PlayerStatus extends Component {
           style={{ display: "flex", padding: "10px", flexDirection: "column" }}
         >
           <h1 style={{ margin: 0 }}>Skills</h1>
+          <h3 style={{ margin: 0, lineHeight: 1.2 }}>XP {xp}</h3>
           <h3 style={{ margin: 0, lineHeight: 1.2 }}>Attack {attack}</h3>
           <h3 style={{ margin: 0, lineHeight: 1.2 }}>Defense {defense}</h3>
           <h3 style={{ margin: 0, lineHeight: 1.2 }}>Agility {agility}</h3>
@@ -94,13 +96,15 @@ class PlayerStatus extends Component {
           >
             Hunger {hunger.toString().split(".")[0]}
           </h3>
-          <h3 style={{ margin: 0, lineHeight: 1.2 }}>Health {health}</h3>
+          <h3 style={{ margin: 0, lineHeight: 1.2 }}>
+            Health {health.toString().split(".")[0]}
+          </h3>
         </div>
         <div
           style={{ display: "flex", padding: "10px", flexDirection: "column" }}
         >
           <h1 style={{ margin: 0, display: "flex", flexBasis: "min0height" }}>
-            Cell
+            Near
           </h1>
           {cell.x && (
             <div
@@ -120,6 +124,40 @@ class PlayerStatus extends Component {
             >
               <div> {cell.biome.emoji != "" && cell.biome.emoji}</div>
               <div> {cell.character.emoji != "" && cell.character.emoji}</div>
+            </div>
+          )}
+        </div>
+        <div
+          style={{ display: "flex", padding: "10px", flexDirection: "column" }}
+        >
+          <h1 style={{ margin: 0, display: "flex", flexBasis: "min0height" }}>
+            Ahead
+          </h1>
+          {movementCell.x && (
+            <div
+              className={`movementCell x: ${movementCell.x} y: ${movementCell.y}`}
+              style={{
+                color: "white",
+                backgroundColor: colors[movementCell.biome.name],
+                minWidth: `80%`,
+                maxWidth: `auto`,
+                display: "flex",
+                flex: 1,
+                flexDirection: "column",
+                textAlign: "center",
+                overflow: "hidden",
+                alignSelf: "right"
+              }}
+            >
+              <div>
+                {" "}
+                {movementCell.biome.emoji != "" && movementCell.biome.emoji}
+              </div>
+              <div>
+                {" "}
+                {movementCell.character.emoji != "" &&
+                  movementCell.character.emoji}
+              </div>
             </div>
           )}
         </div>

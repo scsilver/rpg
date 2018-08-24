@@ -172,7 +172,6 @@ const animals = {
       const panelDisplay =
         newHealth <= 0 ? "You have left this mortal coil" : null;
       const fullScreenPaneNewState = display => {
-        debugger;
         newHealth <= 0 && clearInterval(this.gameInterval);
         return {
           visible: !!display,

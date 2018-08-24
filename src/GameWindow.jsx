@@ -16,7 +16,11 @@ import {
 
 import { characterSpawn } from "../factories/characterSpawn.js";
 import emojis from "../assets/emojis.js";
-import { gameControls, handleKeyPress } from "./gameWindowHandlers.js";
+import {
+  gameControls,
+  handleMoveCharacters,
+  handleKeyPress
+} from "./gameWindowHandlers.js";
 export default class GameWindow extends Component {
   constructor(props) {
     super(props);
@@ -35,11 +39,12 @@ export default class GameWindow extends Component {
         world: {
           time: 0,
           options: {
-            startXp: 5,
             baseHeight: 1,
             heightVariance: 0.3,
             amount: 900,
             side: 30,
+            jobs: ["Ranger", "Wizard", "Knight"],
+            races: ["Human", "Mage", "Elf"],
             orePicker: () =>
               oreOptions[Math.floor(Math.random() * oreOptions.length)],
             biomePicker: () => {
@@ -60,6 +65,7 @@ export default class GameWindow extends Component {
           inventory: [],
           name: "Scott",
           race: "jewBorne",
+          job: "none",
           height: 67,
           age: 27,
           agility: 1,
@@ -67,7 +73,14 @@ export default class GameWindow extends Component {
           defense: 1,
           health: 100,
           hunger: 100,
-          position: { x: 1, y: 1, orientationDeg: "0", cell: {}, cellAhead: {} }
+          xp: 5,
+          position: {
+            x: 1,
+            y: 1,
+            orientationDeg: "0",
+            cell: {},
+            movementCell: {}
+          }
         }
       },
 
@@ -78,13 +91,21 @@ export default class GameWindow extends Component {
   componentDidMount() {
     this.newWorld();
   }
-  inputHandler = (e, inputKey) => {
+
+  inputHandler = (e, inputKey, inputType) => {
+    const { game, game: { player }, options } = this.state;
+    var targetValueNumber = null;
+    if (inputType == "range") {
+      targetValueNumber = Number.parseInt(e.target.value);
+    } else {
+    }
+
     this.setState({
       game: {
-        ...this.state.game,
+        ...game,
         player: {
-          ...this.state.game.player,
-          [`${inputKey}`]: e.target.value
+          ...player,
+          [`${inputKey}`]: targetValueNumber || e.target.value
         }
       }
     });
@@ -183,7 +204,6 @@ export default class GameWindow extends Component {
     });
   };
   newGame = player => {
-    debugger;
     this.setState({
       game: {
         world: {

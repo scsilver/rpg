@@ -6,6 +6,35 @@ import {
 import { characterSpawn } from "../factories/characterSpawn.js";
 import { biomes, characters } from "../assets/assets";
 class gameWindowHandlers {
+  handleMoveCharacters = that => {
+    const {
+      options,
+      game,
+      game: { world, world: { cells, characters } }
+    } = that.state;
+    var nextPositionCharacters = [];
+    characters.map(character => {
+      const { position, position: { x, y, orientationDeg } } = character;
+      const nextCharacter = {
+        ...character,
+        position: {
+          ...position,
+          x: x + Math.floor(Math.sin(orientationDeg * Math.PI / 180)),
+          y: y + Math.floor(Math.cos(orientationDeg * Math.PI / 180))
+        }
+      };
+      nextPositionCharacters = [...nextPositionCharacters, nextCharacter];
+    });
+    const newCells = charactersFiller(cells, nextPositionCharacters, options);
+
+    that.setState({
+      ...that.state,
+      game: {
+        ...game,
+        world: { ...world, cells: newCells, characters: nextPositionCharacters }
+      }
+    });
+  };
   handleMovePlayer(xOffset, yOffset) {
     const {
       position: { x, y, orientationDeg, movementCell }
@@ -98,7 +127,7 @@ class gameWindowHandlers {
         biomes,
         characters
       });
-      this.setState(finalState);
+      this.setState(finalState, () => handleMoveCharacters(this));
     }
   }
   handleDig = () => {
@@ -179,39 +208,42 @@ class gameWindowHandlers {
 
 const newGameWindowHandlers = new gameWindowHandlers();
 function handleKeyPress(event) {
-  switch (event.key) {
-    case "ArrowRight":
-      newGameWindowHandlers.handleMovePlayer.call(this, 1, 0);
-      break;
+  if (!this.state.game.newGameWizard.visible) {
+    switch (event.key) {
+      case "ArrowRight":
+        newGameWindowHandlers.handleMovePlayer.call(this, 1, 0);
+        break;
 
-    case "ArrowLeft":
-      newGameWindowHandlers.handleMovePlayer.call(this, -1, 0);
-      break;
+      case "ArrowLeft":
+        newGameWindowHandlers.handleMovePlayer.call(this, -1, 0);
+        break;
 
-    case "ArrowUp":
-      newGameWindowHandlers.handleMovePlayer.call(this, 0, -1);
-      break;
+      case "ArrowUp":
+        newGameWindowHandlers.handleMovePlayer.call(this, 0, -1);
+        break;
 
-    case "ArrowDown":
-      newGameWindowHandlers.handleMovePlayer.call(this, 0, 1);
-      break;
-    case "h":
-      newGameWindowHandlers.handleAction.call(this, "harvest");
-      break;
-    case "d":
-      newGameWindowHandlers.handleAction.call(this, "dig");
-      break;
-    case "r":
-      newGameWindowHandlers.handleAction.call(this, "read");
-      break;
-    case "g":
-      newGameWindowHandlers.handleAction.call(this, "gather");
-      break;
+      case "ArrowDown":
+        newGameWindowHandlers.handleMovePlayer.call(this, 0, 1);
+        break;
+      case "h":
+        newGameWindowHandlers.handleAction.call(this, "harvest");
+        break;
+      case "d":
+        newGameWindowHandlers.handleAction.call(this, "dig");
+        break;
+      case "r":
+        newGameWindowHandlers.handleAction.call(this, "read");
+        break;
+      case "g":
+        newGameWindowHandlers.handleAction.call(this, "gather");
+        break;
 
-    default:
-      break;
+      default:
+        break;
+    }
   }
 }
 const handleMovePlayer = newGameWindowHandlers.handleMovePlayer;
 const gameControls = newGameWindowHandlers.gameControls;
-export { gameControls, handleMovePlayer, handleKeyPress };
+const handleMoveCharacters = newGameWindowHandlers.handleMoveCharacters;
+export { gameControls, handleMovePlayer, handleMoveCharacters, handleKeyPress };

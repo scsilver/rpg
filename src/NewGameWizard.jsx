@@ -1,6 +1,63 @@
 import React, { Component } from "react";
-
+//  <select
+//                 label="player race"
+//                 value={player.race}
+//                 onChange={e => this.props.inputHandler(e, "race")}
+//               >
+//                 {options.races.map(race => (
+//                   <option value={race}>{race}</option>
+//                 ))}
+//               </select>
 export default class NewGameWizard extends Component {
+  getInput = key => {
+    const { player } = this.props;
+    switch (typeof player[key]) {
+      case "string":
+        return (
+          <input
+            label={key}
+            value={player[key]}
+            onChange={e => this.props.inputHandler(e, key, "textBox")}
+          />
+        );
+        break;
+      case "number":
+        return [
+          <input
+            label={key}
+            type={"range"}
+            defaultValue={player[key]}
+            min={1}
+            max={
+              key == "age" ? (
+                254
+              ) : (
+                Number.parseInt(
+                  player.xp +
+                    player[key] -
+                    (player.defense + player.attack + player.agility)
+                )
+              )
+            }
+            step={1}
+            onChange={e => this.props.inputHandler(e, key, "range")}
+          />,
+          <h5 style={{ margin: 0 }}>{player[key]}</h5>
+        ];
+
+        break;
+
+      default:
+        return (
+          <input
+            label={key}
+            value={player[key]}
+            onChange={e => this.props.inputHandler(e, key, "textBox")}
+          />
+        );
+        break;
+    }
+  };
   render() {
     const {
       newGameWizard: { visible },
@@ -9,16 +66,9 @@ export default class NewGameWizard extends Component {
       world: { options },
       player
     } = this.props;
-    const xpLeft =
-      options.startXp - player.agility - player.attack - player.defense >= 0
-        ? options.startXp - player.agility - player.attack - player.defense
-        : 0;
-    debugger;
-
     return (
       visible && (
         <div
-          onClick={handleClick}
           style={{
             width: "100%",
             height: "80%",
@@ -52,67 +102,26 @@ export default class NewGameWizard extends Component {
             }}
           >
             <div style={{ display: "flex", flex: 1, flexDirection: "column" }}>
-              <h5 style={{ margin: 0 }}>Name</h5>
-              <h5 style={{ margin: 0 }}>Race</h5>
-              <h5 style={{ margin: 0 }}>Job</h5>
-              <h5 style={{ margin: 0 }}>Age</h5>
-              <h5 style={{ margin: 0 }}>Strength</h5>
-              <h5 style={{ margin: 0 }}>Attack</h5>
-              <h5 style={{ margin: 0 }}>Agility</h5>
+              {[
+                "name",
+                "race",
+                "job",
+                "age",
+                "defense",
+                "attack",
+                "agility"
+              ].map(key => (
+                <div
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <h5 style={{ margin: 0 }}>
+                    {key[0].toUpperCase() + key.slice(1)}
+                  </h5>
+                  {this.getInput(key)}
+                </div>
+              ))}
             </div>
-
-            <div style={{ display: "flex", flex: 1, flexDirection: "column" }}>
-              <input
-                label="player name"
-                value={player.name}
-                onChange={e => this.props.inputHandler(e, "name")}
-              />
-              <input
-                label="player race"
-                value={player.race}
-                onChange={e => this.props.inputHandler(e, "race")}
-              />
-              <input
-                label="player job"
-                value={player.job}
-                onChange={e => this.props.inputHandler(e, "job")}
-              />
-              <input
-                label={"age"}
-                type={"range"}
-                defaultValue={player.age}
-                min={1}
-                max={254}
-                onRange={e => this.props.inputHandler(e, "age")}
-              />
-              <input
-                label={"defense"}
-                type={"range"}
-                defaultValue={player.defense}
-                min={1}
-                max={Number.parseInt(player.defense + xpLeft)}
-                step={1}
-                onMouseUp={e => this.props.inputHandler(e, "defense")}
-              />
-              <input
-                label={"attack"}
-                type={"range"}
-                defaultValue={player.attack}
-                min={1}
-                max={Number.parseInt(player.attack + xpLeft)}
-                step={1}
-                onChange={e => this.props.inputHandler(e, "attack")}
-              />
-              <input
-                label={"agility"}
-                type={"range"}
-                defaultValue={player.agility}
-                min={1}
-                max={Number.parseInt(player.agility + xpLeft)}
-                step={1}
-                onChange={e => this.props.inputHandler(e, "agility")}
-              />
-            </div>
+            <button onClick={handleClick}>Start</button>
           </div>
         </div>
       )

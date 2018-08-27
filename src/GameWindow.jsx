@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { observer, Observer } from "mobx-react";
+import { observable, computed } from "mobx";
 import Grid from "./Grid.jsx";
 import PropTypes from "prop-types";
 import ActionPane from "./ActionPane.jsx";
@@ -21,72 +23,16 @@ import {
   handleMoveCharacters,
   handleKeyPress
 } from "./gameWindowHandlers.js";
-export default class GameWindow extends Component {
+import state from './store/state.js'
+@observer
+class GameWindow extends Component {
   constructor(props) {
-    super(props);
-    this.state = {
-      game: {
-        fullScreenPane: {
-          visible: false,
-          display: ""
-        },
-        effectsPane: {
-          red: false
-        },
-        newGameWizard: {
-          visible: false
-        },
-        world: {
-          time: 0,
-          options: {
-            baseHeight: 1,
-            heightVariance: 0.3,
-            amount: 900,
-            side: 30,
-            jobs: ["Ranger", "Wizard", "Knight"],
-            races: ["Human", "Mage", "Elf"],
-            orePicker: () =>
-              oreOptions[Math.floor(Math.random() * oreOptions.length)],
-            biomePicker: () => {
-              var newBiomes = biomes;
-              delete newBiomes.mountain;
-              return objectToArray(newBiomes).getRandomFromObject();
-            }
-          },
-          cells: [],
-          characters: []
-        },
-        player: {
-          mentalState: {
-            interaction: "Feeling fine...",
-            environment: "Blissful..."
-          },
-          emoji: emojis.player,
-          inventory: [],
-          name: "Scott",
-          race: "jewBorne",
-          job: "none",
-          height: 67,
-          age: 27,
-          agility: 1,
-          attack: 1,
-          defense: 1,
-          health: 100,
-          hunger: 100,
-          xp: 5,
-          position: {
-            x: 1,
-            y: 1,
-            orientationDeg: "0",
-            cell: {},
-            movementCell: {}
-          }
-        }
-      },
-
-      cellHistory: [],
-      saves: []
-    };
+    super(props)
+    this.state = state
+  }
+  @computed
+  get characters() {
+    return this.state.game.world.characters;
   }
   componentDidMount() {
     this.newWorld();
@@ -115,10 +61,10 @@ export default class GameWindow extends Component {
     const newHunger = (this.state.game.player.hunger - hungerRate)
       .toString()
       .slice(
-        0,
-        Math.ceil(Math.log10(this.state.game.player.hunger)) -
-          Math.log10(hungerRate) +
-          1
+      0,
+      Math.ceil(Math.log10(this.state.game.player.hunger)) -
+      Math.log10(hungerRate) +
+      1
       );
     const isStarved = newHunger < 0;
     isStarved ? clearInterval(this.gameInterval) : null;
@@ -185,35 +131,33 @@ export default class GameWindow extends Component {
       this.state.game.world.options
     );
 
-    this.setState({
-      game: {
-        ...this.state.game,
-        fullScreenPane: {
-          visible: true,
-          type: "start",
-          display:
-            "You awake on a new world. There are beaches, forests and mountains full of new friends, adventures, and unspeakable dangers. Proceed with wonder and caution."
-        },
-        world: {
-          ...this.state.game.world,
-          cells: characterCells,
-          characters,
-          time: 0
-        }
+    this.state.updateGame({
+      ...this.state.game,
+      fullScreenPane: {
+        visible: true,
+        type: "start",
+        display:
+        "You awake on a new world. There are beaches, forests and mountains full of new friends, adventures, and unspeakable dangers. Proceed with wonder and caution."
+      },
+      world: {
+        ...this.state.game.world,
+        cells: characterCells,
+        characters,
+        time: 0
       }
-    });
+    })
+
+
   };
   newGame = player => {
-    this.setState({
-      game: {
-        world: {
-          ...this.state.game.world,
-          cells: cellsFactory(this.state.game.world.options),
-          time: 0
-        },
-        ...this.state.game
-      }
-    });
+    this.state.updateGame({
+      world: {
+        ...this.state.game.world,
+        cells: cellsFactory(this.state.game.world.options),
+        time: 0
+      },
+      ...this.state.game
+    })
   };
   saveGame = () =>
     this.setState({ saves: [...this.state.saves, this.state.game] });
@@ -229,15 +173,15 @@ export default class GameWindow extends Component {
     return (
       objectToArray(categoryOptions)
         .values.map(
-          categoryOption =>
-            movementCell[categoryName].name == categoryOption.name
-              ? categoryOption.playerInteraction(
-                  state,
-                  movementCell,
-                  forwardMovementCell,
-                  orientationDeg
-                )
-              : false
+        categoryOption =>
+          movementCell[categoryName].name == categoryOption.name
+            ? categoryOption.playerInteraction(
+              state,
+              movementCell,
+              forwardMovementCell,
+              orientationDeg
+            )
+            : false
         )
         .filter(option => option)[0] || state
     );
@@ -253,15 +197,15 @@ export default class GameWindow extends Component {
     return (
       objectToArray(categoryOptions)
         .values.map(
-          categoryOption =>
-            forwardMovementCell[categoryName].name == categoryOption.name
-              ? categoryOption.playerDistantView(
-                  state,
-                  movementCell,
-                  forwardMovementCell,
-                  orientationDeg
-                )
-              : false
+        categoryOption =>
+          forwardMovementCell[categoryName].name == categoryOption.name
+            ? categoryOption.playerDistantView(
+              state,
+              movementCell,
+              forwardMovementCell,
+              orientationDeg
+            )
+            : false
         )
         .filter(option => option)[0] || state
     );
@@ -306,26 +250,31 @@ export default class GameWindow extends Component {
     leading: true
   });
   render() {
-    const { data } = this.state;
     return (
-      <div class="GameWindow" tabIndex="0" onKeyDown={this.handleKeyPress}>
-        <NewGameWizard
-          {...this.state.game}
-          inputHandler={this.inputHandler}
-          handleClick={this.handleNewGameWizardClick}
-        />
-        <FullScreenPane
-          {...this.state.game.fullScreenPane}
-          handleClick={this.handleFullScreenDisplayClick}
-        />
+      <Observer>{() =>
+        <div class="GameWindow" tabIndex="0" onKeyDown={this.handleKeyPress}>
 
-        <EffectsPane {...this.state.game.effectsPane} />
-        <ActionPane
-          {...this.state}
-          gameControls={{ newWorld: this.newWorld }}
-        />
-        <InfoPane {...this.state} gameControls={{ newWorld: this.newWorld }} />
-      </div>
+          <NewGameWizard
+            {...this.state.game
+            }
+            inputHandler={this.inputHandler}
+            handleClick={this.handleNewGameWizardClick}
+          />
+          <FullScreenPane
+            {...this.state.game.fullScreenPane}
+            handleClick={this.handleFullScreenDisplayClick}
+          />
+
+          <EffectsPane {...this.state.game.effectsPane} />
+          <ActionPane
+            {...this.state}
+            gameControls={{ newWorld: this.newWorld }}
+          />
+          <InfoPane {...this.state} gameControls={{ newWorld: this.newWorld }} />
+        </div>}
+      </Observer>
     );
   }
+
 }
+export default GameWindow;

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import _ from "lodash";
 import Cell from "./Cell.jsx";
-import Player from "./Player.jsx";
+import Player from "../Objects/Player.jsx";
 
 export default class Grid extends Component {
   constructor() {

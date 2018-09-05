@@ -4,7 +4,7 @@ const webpack = require("webpack");
 
 module.exports = {
   mode: "development",
-  entry: "./src/index.js",
+  entry: "./src/index/index.js",
   output: {
     path: __dirname + "/static",
     filename: "[name].[hash].js"
@@ -36,7 +36,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebPackPlugin({
-      template: "./src/index.html",
+      template: "./src/index/index.html",
       filename: "./index.html"
     }),
     new webpack.HotModuleReplacementPlugin()

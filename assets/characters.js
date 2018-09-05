@@ -1,6 +1,6 @@
 import Proptypes from "prop-types";
 import emojis from "./emojis.js";
-import { objectToArray } from "../src/helpers";
+import { objectToArray } from "../src/Helpers/helpers";
 
 const person = {
   emoji: "",
@@ -23,44 +23,30 @@ const person = {
     forwardMovementCell,
     orientationDeg
   ) => {
-    return {
-      ...state,
-      cellHistory: [...state.cellHistory, state.game.player.cell],
-      game: {
-        ...state.game,
-        player: {
-          ...state.game.player,
-          mentalState: {
-            ...state.game.player.mentalState,
-            interaction: `Hey!`
-          },
-          hunger: state.game.player.hunger - 1,
-          position: {
-            ...state.game.player.position,
-            x: movementCell.x,
-            y: movementCell.y,
-            movementCell: forwardMovementCell,
-            cell: movementCell,
-            orientationDeg
-          }
-        }
+    state.updateCellHistory(state.game.player.cell)
+    state.updatePlayer({
+      mentalState: {
+        ...state.game.player.mentalState,
+        interaction: `Hey!`
+      },
+      hunger: state.game.player.hunger - 1,
+      position: {
+        ...state.game.player.position,
+        x: movementCell.x,
+        y: movementCell.y,
+        movementCell: forwardMovementCell,
+        cell: movementCell,
+        orientationDeg
       }
-    };
+    })
   },
   playerDistantView: (state, movementCell, forwardMovementCell) => {
-    return {
-      ...state,
-      game: {
-        ...state.game,
-        player: {
-          ...state.game.player,
-          mentalState: {
-            ...state.game.player.mentalState,
-            environment: "There is a man."
-          }
-        }
+    state.updatePlayer({
+      mentalState: {
+        ...state.game.player.mentalState,
+        environment: "There is a man."
       }
-    };
+    })
   }
 };
 const human = {
@@ -162,7 +148,7 @@ const animals = {
     attack: 5,
     killedItem: [meats.snake],
 
-    playerInteraction: function(
+    playerInteraction: function (
       state,
       movementCell,
       forwardMovementCell,
@@ -172,30 +158,27 @@ const animals = {
       const panelDisplay =
         newHealth <= 0 ? "You have left this mortal coil" : null;
       const fullScreenPaneNewState = display => {
-        newHealth <= 0 && clearInterval(this.gameInterval);
+        newHealth <= 0 && clearInterval(state.gameInterval);
         return {
           visible: !!display,
           display,
           types: "end"
         };
       };
-      return {
-        ...state,
-        game: {
-          ...state.game,
-          fullScreenPane: fullScreenPaneNewState(panelDisplay),
-          effectsPane: { hit: true },
-          player: {
-            ...state.game.player,
-            health: newHealth,
+      state.updateGam({
+        fullScreenPane: fullScreenPaneNewState(panelDisplay),
+        effectsPane: { hit: true },
+        player: {
+          ...state.game.player,
+          health: newHealth,
 
-            mentalState: {
-              ...state.game.player.mentalState,
-              interaction: "Ouch, he bit me!"
-            }
+          mentalState: {
+            ...state.game.player.mentalState,
+            interaction: "Ouch, he bit me!"
           }
         }
-      };
+      }
+      )
     },
     playerDistantView: (
       state,
@@ -203,19 +186,13 @@ const animals = {
       forwardMovementCell,
       orientationDeg
     ) => {
-      return {
-        ...state,
-        game: {
-          ...state.game,
-          player: {
-            ...state.game.player,
-            mentalState: {
-              ...state.game.player.mentalState,
-              environment: "Hey look! A snoot!"
-            }
-          }
+      state.updatePlayer({
+        mentalState: {
+          ...state.game.player.mentalState,
+          environment: "Hey look! A snoot!"
         }
-      };
+
+      })
     }
   },
   fish: {
@@ -555,7 +532,7 @@ const biomes = {
             mentalState: {
               ...state.game.player.mentalState,
               interaction:
-                "That mountain is so tall, it's peak is hidden in the clouds. I'll die if I climb it!"
+              "That mountain is so tall, it's peak is hidden in the clouds. I'll die if I climb it!"
             }
           }
         }

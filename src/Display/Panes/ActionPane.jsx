@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Grid from "./Grid.jsx";
-import colors from "../styling/theme.js";
+import Grid from "../Structures/Grid.jsx";
+import colors from "../../../styling/theme.js";
 export default class ActionPane extends Component {
   render() {
     const { game } = this.props;

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import colors from "../styling/theme.js";
+import colors from "../../../styling/theme.js";
 const degToRad = deg => Math.PI * deg / 180;
 export default class Player extends Component {
   render() {

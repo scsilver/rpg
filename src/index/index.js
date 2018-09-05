@@ -1,4 +1,4 @@
-import GameWindow from "./GameWindow.jsx";
+import GameWindow from "../Display/GameWindow.jsx";
 import React from "react";
 import reactDOM from "react-dom";
 

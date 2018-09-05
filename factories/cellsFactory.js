@@ -1,6 +1,6 @@
 import _ from "lodash";
 import { biomes, characters } from "../assets/characters.js";
-import { percentTrue } from "../src/helpers.js";
+import { percentTrue } from "../src/Helpers/helpers.js";
 const baseHeight = 10;
 const getSqrt = amount => Math.floor(Math.sqrt(amount));
 
@@ -112,12 +112,12 @@ const landScapeModules = {
                 cells[x + xOffset][y + yOffset] &&
                 cells[x + xOffset][y + yOffset].height) ||
                 baseHeight) *
-                (cells &&
+              (cells &&
                 cells[x + xOffset] &&
                 cells[x + xOffset][y + yOffset] &&
                 cells[x + xOffset][y + yOffset].height > baseHeight
-                  ? 2
-                  : 1);
+                ? 2
+                : 1);
             count = count + 1;
           }
         });
@@ -171,8 +171,8 @@ const xcellsFactory = amount => {
     const x = cellId % sideCells;
     const y = Math.floor(cellId / sideCells);
 
-    const biome = () => {};
-    const resources = () => {};
+    const biome = () => { };
+    const resources = () => { };
 
     cells[x][y] = {
       ...landScapeModules.b({ x, y }, cells, sideCells),
@@ -237,8 +237,8 @@ const heightMaker = (cell, cells, options) => {
   return {
     ...cell,
     height:
-      options.baseHeight * options.heightVariance * (Math.random() - 0.4) +
-      options.baseHeight
+    options.baseHeight * options.heightVariance * (Math.random() - 0.4) +
+    options.baseHeight
   };
 };
 
@@ -254,9 +254,9 @@ const heightAverager = (cell, cells, options) => {
   return {
     ...cell,
     height:
-      adjacentCells.map(cell => cell.height).reduce((curr, prev) => {
-        return prev + curr;
-      }, 0) / adjacentCells.length
+    adjacentCells.map(cell => cell.height).reduce((curr, prev) => {
+      return prev + curr;
+    }, 0) / adjacentCells.length
   };
 };
 

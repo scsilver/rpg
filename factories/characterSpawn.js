@@ -2,7 +2,7 @@ import {
   objectToArray,
   getRandomFromArray,
   percentTrue
-} from "../src/helpers.js";
+} from "../src/Helpers/helpers.js";
 import { characters, biomes } from "../assets/characters.js";
 const characterSpawn = (cells, options) => {
   let spawnedCharacters = [];

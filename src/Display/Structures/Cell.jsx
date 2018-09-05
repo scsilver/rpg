@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import colors from "../styling/theme.js";
+import colors from "../../../styling/theme.js";
 const resourceList = {
   iron: { ore: true, food: false, material: false },
   diamond: { ore: true, food: false, material: false },

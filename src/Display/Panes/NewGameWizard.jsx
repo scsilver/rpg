@@ -15,6 +15,8 @@ export default class NewGameWizard extends Component {
       case "string":
         return (
           <input
+            key={key}
+
             label={key}
             value={player[key]}
             onChange={e => this.props.inputHandler(e, key, "textBox")}
@@ -24,6 +26,8 @@ export default class NewGameWizard extends Component {
       case "number":
         return [
           <input
+            key={key}
+
             label={key}
             type={"range"}
             defaultValue={player[key]}
@@ -32,12 +36,12 @@ export default class NewGameWizard extends Component {
               key == "age" ? (
                 254
               ) : (
-                Number.parseInt(
-                  player.xp +
+                  Number.parseInt(
+                    player.xp +
                     player[key] -
                     (player.defense + player.attack + player.agility)
+                  )
                 )
-              )
             }
             step={1}
             onChange={e => this.props.inputHandler(e, key, "range")}
@@ -50,6 +54,7 @@ export default class NewGameWizard extends Component {
       default:
         return (
           <input
+            key={key}
             label={key}
             value={player[key]}
             onChange={e => this.props.inputHandler(e, key, "textBox")}
@@ -85,7 +90,7 @@ export default class NewGameWizard extends Component {
           <div
             style={{
               backgroundImage:
-                "url(https://images.template.net/wp-content/uploads/2017/01/07045821/White-Parchment-Paper-Texture.jpg)",
+              "url(https://images.template.net/wp-content/uploads/2017/01/07045821/White-Parchment-Paper-Texture.jpg)",
               width: "50%",
               height: "50%",
               backgroundColor: "white",
@@ -111,7 +116,7 @@ export default class NewGameWizard extends Component {
                 "attack",
                 "agility"
               ].map(key => (
-                <div
+                <div key={key}
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <h5 style={{ margin: 0 }}>

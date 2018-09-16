@@ -2,8 +2,8 @@ import React, { Component } from "react";
 
 export default class EffectsPane extends Component {
   render() {
-    const { hit } = this.props;
-    return hit ? (
+    const { playerHealthHit } = this.props;
+    return playerHealthHit ? (
       <div
         style={{
           width: "100%",
@@ -16,7 +16,9 @@ export default class EffectsPane extends Component {
           alignItems: "center",
           display: "flex"
         }}
-      />
+      >
+        {playerHealthHit}
+      </div>
     ) : null;
   }
 }

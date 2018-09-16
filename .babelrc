@@ -1,8 +1,12 @@
 {
-  "presets": ["env", "react"],
+  "presets": [
+    "env",
+    "react"
+  ],
   "plugins": [
+    "transform-decorators-legacy",
     "transform-class-properties",
-    "syntax-object-rest-spread",
-    "transform-decorators"
-  ]
+    "transform-object-rest-spread"
+  ],
+  "retainLines": true
 }

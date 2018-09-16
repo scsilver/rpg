@@ -13,11 +13,16 @@ const resourceList = {
   fish: { ore: false, food: true, material: false },
   water: { ore: false, food: true, material: false }
 };
+import { observer, Observer } from "mobx-react";
+@observer
 export default class Cell extends Component {
+  static defaultProps = {
+    options: { side: 30 }
+  };
   render() {
     const {
       cell,
-      cell: { x, y, biome, resources, character },
+      cell: { position: { x, y }, biome, resources, character },
       options
     } = this.props;
     const hue = 0;
@@ -39,7 +44,11 @@ export default class Cell extends Component {
           overflow: "hidden"
         }}
       >
-        {biome.emoji != "" ? biome.emoji : character.emoji}
+        {biome.emoji != "" ? (
+          biome.emoji
+        ) : (
+          character && character.health > 0 && character.emoji
+        )}
       </div>
     );
   }

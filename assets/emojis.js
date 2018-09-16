@@ -10,6 +10,7 @@ const emojis = {
   bird: "🐦",
   crab: "🦀",
   wizard: "🧙‍",
-  human: "🕺"
+  human: "🕺",
+  water: ""
 };
 export default emojis;

@@ -6,7 +6,7 @@ import {
 import { characters, biomes } from "../assets/characters.js";
 const characterSpawn = (cells, options) => {
   let spawnedCharacters = [];
-  let characterIdCount;
+  let characterIdCount = 0;
   let positionedCharacter = null;
   spawnedCharacters = [...spawnedCharacters];
   cells.map((cell, cellIndex) => {
@@ -17,19 +17,20 @@ const characterSpawn = (cells, options) => {
       positionedCharacter = {
         ...newCharacter,
         id: characterIdCount,
+        cellsAhead: [cell],
+        orientationDeg: getRandomFromArray([0, 90, 180, 270]),
         position: {
           ...newCharacter.position,
-          cell: cell,
           x: cell.x,
-          y: cell.y,
-          orientationDeg: getRandomFromArray([0, 90, 180, 270])
+          y: cell.y
         }
       };
       spawnedCharacters = [...spawnedCharacters, positionedCharacter];
+      characterIdCount = characterIdCount + 1;
     } else {
     }
-    characterIdCount = characterIdCount + 1;
   });
+
   return spawnedCharacters;
 };
 

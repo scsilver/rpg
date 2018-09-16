@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import colors from "../../../styling/theme.js";
-import WorldStatus from './Status/WorldStatus.jsx'
-import PlayerStatus from './Status/PlayerStatus.jsx'
+import WorldStatus from "./Status/WorldStatus.jsx";
+import PlayerStatus from "./Status/PlayerStatus.jsx";
 const resourceList = {
   iron: { ore: true, food: false, material: false },
   diamond: { ore: true, food: false, material: false },
@@ -24,7 +24,7 @@ export default class InfoPane extends Component {
       <div
         style={{
           backgroundImage:
-          "url(https://images.template.net/wp-content/uploads/2017/01/07045821/White-Parchment-Paper-Texture.jpg)",
+            "url(https://images.template.net/wp-content/uploads/2017/01/07045821/White-Parchment-Paper-Texture.jpg)",
           width: "100%",
           height: "20%",
           backgroundColor: colors.tertiary,
@@ -50,7 +50,6 @@ export default class InfoPane extends Component {
     );
   }
 }
-
 
 {
   /*<div

@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 
 export default class FullScreenPane extends Component {
+  static defaultProps = {
+    display: ''
+  }
   render() {
     const { visible, display, handleClick } = this.props;
     return (
@@ -23,7 +26,7 @@ export default class FullScreenPane extends Component {
           <div
             style={{
               backgroundImage:
-                "url(https://images.template.net/wp-content/uploads/2017/01/07045821/White-Parchment-Paper-Texture.jpg)",
+              "url(https://images.template.net/wp-content/uploads/2017/01/07045821/White-Parchment-Paper-Texture.jpg)",
               width: "50%",
               height: "50%",
               backgroundColor: "white",
@@ -42,8 +45,8 @@ export default class FullScreenPane extends Component {
             {display
               .split(".")
               .map((sentence, i, d) => [
-                <div>{sentence}</div>,
-                i > d.length - 3 ? null : <div>»»————-　　————-««</div>
+                <div key={i}>{sentence}</div>,
+                i > d.length - 3 ? null : <div key={'divider' + i}>»»————-　　————-««</div>
               ])}
           </div>
         </div>

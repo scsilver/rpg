@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import Grid from "../Structures/Grid.jsx";
 import colors from "../../../styling/theme.js";
+import { observer, Observer } from "mobx-react";
+
+@observer
 export default class ActionPane extends Component {
   render() {
-    const { game } = this.props;
     return (
       <div
         style={{
@@ -19,7 +21,7 @@ export default class ActionPane extends Component {
           top: 0
         }}
       >
-        <Grid game={game} />
+        <Grid {...this.props} />
       </div>
     );
   }

@@ -4,7 +4,7 @@ const degToRad = deg => Math.PI * deg / 180;
 export default class Player extends Component {
   render() {
     const { player, world: { cells, options } } = this.props;
-    const orientationRad = degToRad(player.position.orientationDeg);
+    const orientationRad = degToRad(player.orientationDeg);
     return (
       <div
         style={{

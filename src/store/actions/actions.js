@@ -16,11 +16,13 @@ import addGameActions from "./gameActions";
 import addCellActions from "./cellActions";
 import addProbabilityActions from "./probabilityActions";
 const addActions = state => {
-  state.updateState = action(function(state) {
-    state.game = state.game;
-    state.cellHistory = [...state.cellHistory];
-    state.saves = [...state.saves];
-  });
+  state.getRandomFromArray = array => {
+    return array[Math.floor(Math.random() * array.length)];
+  };
+  state.objectToArray = obj => Object.keys(obj).map(key => obj[key]);
+  state.getRandomFromObject = obj => {
+    return state.getRandomFromArray(state.objectToArray(obj));
+  };
   state.updateCellHistory = action(function(cell) {
     state.cellHistory = [...state.cellHistory, ...cell];
   });

@@ -1,7 +1,11 @@
 import { observable, action, computed, autorun, get } from "mobx";
-import characters from "../../../assets/Characters/characters";
 import Character from "../../../assets/Characters/Character";
+import { characters } from "../../../assets/characterAssets";
+
 const addCharacterActions = state => {
+  state.getCharacterRandom = () => {
+    return state.getRandomFromObject(characters);
+  };
   state.initializeCharacters = action(() => {
     const characters = [];
     state.game.world.cells.map(cell => {

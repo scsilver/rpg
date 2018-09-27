@@ -1,12 +1,6 @@
 import Biome from "./Biome";
 import emojis from "../../emojis";
-
-const biomes = {
-  forest: new Biome({ name: "forest", emoji: emojis["tree"] }),
-  beach: new Biome({ name: "beach" }),
-  mountain: new Biome({ name: "mountain", emoji: emojis["mountain"] }),
-  plain: new Biome({ name: "plain" }),
-  water: new Biome({ name: "water" })
-};
-
+import { biomeNames } from "../../lists";
+const biomes = {};
+biomeNames.map(biomeName => (biomes[biomeName] = new Biome({ name })));
 export default biomes;

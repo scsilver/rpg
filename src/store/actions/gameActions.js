@@ -87,8 +87,8 @@ const addGameActions = state => {
   });
   state.initializeWorld = action(() => {
     state.updateWorld(initialWorldState());
-    state.initializeCells();
-    state.initializeCharacters();
+    state.defaultCellsStateRecipie();
+    // state.initializeCharacters();
     // state.initializeIntro();
     // state.initializeSavedGame();
   });

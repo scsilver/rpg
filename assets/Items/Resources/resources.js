@@ -1,30 +1,28 @@
 import Fruit from "./Fruit";
 import Meat from "./Meat";
-import Ore from "./Ore";
 import Seed from "./Seed";
+import Ore from "./Ore";
+import { floraNames, mineralNames, animalNames } from "../../lists";
 
-const fruits = {
-  apple: new Fruit({ name: "apple" }),
-  strawberry: new Fruit({ name: "apple" })
+const buildResoureClasses = (names, resourceClass) => {
+  const classObject = {};
+  names.map(name => (classObject[name] = new resourceClass({ name })));
+  return classObject;
 };
-const seeds = {
-  corn: new Seed({ name: "corn" })
-};
-const ores = {
-  iron: new Ore({ name: "iron" }),
-  copper: new Ore({ name: "copper" })
-};
-const woods = {
-  pine: { name: "pine" }
-};
+
+const fruits = buildResoureClasses(floraNames, Fruit);
+const seeds = buildResoureClasses(floraNames, Seed);
+const meats = buildResoureClasses(animalNames, Meat);
+const ores = buildResoureClasses(mineralNames, Ore);
 
 const resources = {
   ...fruits,
   ...seeds,
+  ...meats,
   ...ores,
-  woods,
   fruits,
   seeds,
+  meats,
   ores
 };
 export default resources;

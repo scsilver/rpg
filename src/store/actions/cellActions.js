@@ -18,6 +18,7 @@ const addCellActions = state => {
     state.characterInteraction({ cell });
     state.executedInstructionSet();
   });
+
   state.executedInstructionSet = action(() => {
     Object.keys(state.instructionSet)
       .filter(
@@ -29,10 +30,29 @@ const addCellActions = state => {
       });
   });
   state.defaultCellsStateRecipie = action(() => {
-    state.instantiatCells();
-    state.applyRandomAndAveragedCellHeights();
+    state.initializeCells();
+    // state.applyRandomAndAveragedCellHeights();
     state.applyBiomes();
     state.applyCharacters();
+  });
+  state.applyBiomes = action(() => {
+    state.game.world.cells = state.game.world.cells.map(cell => {
+      return { ...cell, biome: state.getBiomeRandom() };
+    });
+  });
+  state.applyBiomes = action(() => {
+    const nextCells = state.game.world.cells.map(cell => {
+      return { ...cell, biome: state.getBiomeRandom() };
+    });
+    debugger;
+    state.updateCells(nextCells);
+  });
+  state.applyCharacters = action(() => {
+    const nextCharacters = [];
+    state.game.world.cells.map(cell => {
+      nextCharacters.push[state.getCharacterRandom()];
+    });
+    state.updateCharacters(nextCharacters);
   });
   state.initializeCells = action(() => {
     const cells = [];
@@ -139,6 +159,12 @@ const addCellActions = state => {
 
   state.playerCellsAhead = () =>
     state.getCellsByPattern(state.game.player, 4, "lineFront");
+
+  state.getDistanceBetween = (a, b) => {
+    const deltaX = a.position.x - b.position.x;
+    const deltaY = a.position.y - b.position.y;
+    return Math.sqrt(deltaX * deltaX * deltaY * deltaY);
+  };
 
   // state.charactersCellsAhead = computed(() =>
   //   state.game.world.characters.map(charactr => {

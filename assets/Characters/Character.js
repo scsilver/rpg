@@ -1,5 +1,5 @@
 import skills from "./Skills.ts";
-import Position from "../Utils/Position.ts";
+import Position from "../Utils/Position";
 export default class Character {
   skills = skills;
   magic = 0;

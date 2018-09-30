@@ -1,9 +1,11 @@
 const emojis = {
   wave: "🌊",
-  beach: "🏻",
-  plain: "🏻",
+  beach: "", //🏻
+  plain: "", //🏻
   mountain: "⛰️",
   tree: "🌲",
+  "apple tree": "🌳",
+  bush: "🌳",
   player: "👦",
   snake: "🐍",
   fish: "🐟",
@@ -12,6 +14,12 @@ const emojis = {
   wizard: "🧙‍",
   human: "🕺",
   water: "",
-  "": ""
+  "": "",
+  apple: "🍎",
+  greenApple: "🍏",
+  corn: "🌽",
+  "corn plant": "🌾",
+  strawberry: "🍓",
+  seed: "🌰"
 };
 export default emojis;

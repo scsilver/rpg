@@ -1,9 +1,11 @@
 import { action } from "mobx";
 import { biomes } from "../../../assets/biomeAssets";
+
 const addBiomeActions = state => {
   state.getBiomeRandom = () => {
     return state.getRandomFromObject(biomes);
   };
+
   state.biomeInteraction = action(({ cell }) => {
     switch (cell.biome.name) {
       case "mountain":
@@ -19,6 +21,7 @@ const addBiomeActions = state => {
           ...state.instructionSet,
           movePlayerForward: true
         };
+        console.log("instructionSet Biome", " else, no limited movement");
         break;
     }
   });

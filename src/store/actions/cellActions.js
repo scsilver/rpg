@@ -1,187 +1,64 @@
 import { action, computed } from "mobx";
 import Cell from "../../../assets/Environment/Cell.js";
 import _ from "lodash";
+import plants from "../../../assets/Environment/plants";
 const addCellActions = state => {
-  state.checkOneAheadCell = () => {
-    const { biome, character } = state.playerCellsAhead()[1];
-    return { biome, character };
-  };
-  state.checkTwoAheadCell = () => {
-    const { biome, character } = state.playerCellsAhead()[2];
-    return { biome, character };
-  };
-  state.interactionHandler = action(cell => {
-    state.instructionSet = {
-      movePlayerForward: false
-    };
-    state.biomeInteraction({ cell });
-    state.characterInteraction({ cell });
-    state.executedInstructionSet();
-  });
-
-  state.executedInstructionSet = action(() => {
-    Object.keys(state.instructionSet)
-      .filter(
-        (key, i, keys) =>
-          !!state.instructionSet[key] && typeof state[key] == "function"
-      )
-      .map((key, i, keys) => {
-        state[key](state.instructionSet[key]);
-      });
-  });
-  state.defaultCellsStateRecipie = action(() => {
-    state.initializeCells();
-    // state.applyRandomAndAveragedCellHeights();
-    state.applyBiomes();
-    state.applyCharacters();
-  });
-  state.applyBiomes = action(() => {
-    state.game.world.cells = state.game.world.cells.map(cell => {
-      return { ...cell, biome: state.getBiomeRandom() };
-    });
-  });
-  state.applyBiomes = action(() => {
-    const nextCells = state.game.world.cells.map(cell => {
-      return { ...cell, biome: state.getBiomeRandom() };
-    });
-    debugger;
-    state.updateCells(nextCells);
-  });
-  state.applyCharacters = action(() => {
-    const nextCharacters = [];
-    state.game.world.cells.map(cell => {
-      nextCharacters.push[state.getCharacterRandom()];
-    });
-    state.updateCharacters(nextCharacters);
-  });
   state.initializeCells = action(() => {
     const cells = [];
-    _.times(state.game.world.options.side, x =>
-      _.times(state.game.world.options.side, y =>
+    _.times(state.game.world.options.side, y =>
+      _.times(state.game.world.options.side, x =>
         cells.push(new Cell({ position: { x, y } }))
       )
     );
     state.updateCells(cells);
   });
 
-  state.cellsToBeChecked = (character, offsetArray) => {
-    const cellsToBeChecked = [];
-    const { orientationDeg, position: { x, y } } = character;
-    offsetArray.map(offset => {
-      const directionalx =
-        offset.xOffset * Math.floor(Math.sin(orientationDeg * Math.PI / 180)) +
-        offset.yOffset * Math.floor(Math.sin(orientationDeg * Math.PI / 180));
-      const directionaly =
-        offset.yOffset * Math.floor(Math.cos(orientationDeg * Math.PI / 180)) -
-        offset.xOffset * Math.floor(Math.cos(orientationDeg * Math.PI / 180));
-
-      cellsToBeChecked.push(
-        state.getCellByPosition({ x: x + directionalx, y: y + directionaly })
-      );
-    });
-    return cellsToBeChecked;
-  };
-  state.checkCell = (
-    categoryName,
-    categoryOptions,
-    state,
-    movementCell,
-    forwardMovementCell,
-    orientationDeg
-  ) => {
-    return (
-      objectToArray(categoryOptions)
-        .values.map(
-          categoryOption =>
-            movementCell[categoryName].name == categoryOption.name
-              ? categoryOption.playerInteraction(
-                  state,
-                  movementCell,
-                  forwardMovementCell,
-                  orientationDeg
-                )
-              : false
-        )
-        .filter(option => option)[0] || state
-    );
-  };
-
-  state.patternToOffsetArray = args => {
-    const { rOffsets, xOffsets, yOffsets } = args;
-    const offSetArray = [];
-    rOffsets.map(rOffset =>
-      xOffsets.map(xOffset =>
-        yOffsets.map(yOffset =>
-          offSetArray.push({
-            xOffset: rOffset * xOffset,
-            yOffset: rOffset * yOffset
-          })
-        )
-      )
-    );
-    return offSetArray;
-  };
-  state.patternedOffsetArray = (r, pattern) => {
-    switch (pattern) {
-      case "lineFront":
-        return state.patternToOffsetArray({
-          rOffsets: _.times(r, radialOffset => radialOffset),
-          xOffsets: [1],
-          yOffsets: [0]
-        });
-      case "radar":
-        return state.patternToOffsetArray({
-          rOffsets: _.times(r, radialOffset => radialOffset),
-          xOffsets: [-1, 0, 1],
-          yOffsets: [-1, 0, 1]
-        });
-      case "view":
-        return state.patternToOffsetArray({
-          rOffsets: _.times(r, radialOffset => radialOffset),
-
-          xOffsets: [0, 1],
-          yOffsets: [-1, 0, 1]
-        });
-      case "front":
-        return state.patternToOffsetArray({
-          rOffsets: _.times(r, radialOffset => radialOffset),
-          xOffsets: [1],
-          yOffsets: [-1, 0, 1]
-        });
-
-      default:
-        break;
-    }
-  };
-
-  state.getCellsByPattern = (character, r, pattern) =>
-    state.cellsToBeChecked(character, state.patternedOffsetArray(r, pattern));
-
-  state.playerCellsAhead = () =>
-    state.getCellsByPattern(state.game.player, 4, "lineFront");
-
-  state.getDistanceBetween = (a, b) => {
-    const deltaX = a.position.x - b.position.x;
-    const deltaY = a.position.y - b.position.y;
-    return Math.sqrt(deltaX * deltaX * deltaY * deltaY);
-  };
-
-  // state.charactersCellsAhead = computed(() =>
-  //   state.game.world.characters.map(charactr => {
-  //     return {
-  //       id: character.id,
-  //       cellsAhead: state.characterCellsAhead(character)
-  //     };
-  //   })
-  // );
-
-  state.characterCellsAhead = character =>
-    state.getCellsByPattern(state.game.player, 4, "lineFront");
-  state.updateCells = action(cells => {
-    state.game.world.cells = cells;
+  state.defaultCellsStateRecipie = action(() => {
+    state.initializeCells();
+    // state.applyRandomAndAveragedCellHeights();
+    state.applyBiomes();
+    state.applyPlants();
+    state.applyCharacters();
   });
-  state.updateCell = action((cell, id) => {
-    state.game.world.cells[id] = cell;
+
+  state.applyPlants = action(() => {
+    const plantsClasses = Object.keys(plants)
+      .filter(key => key != "initialized")
+      .map(plantKey => plants[plantKey]);
+    const nextCells = state.game.world.cells.map(cell => {
+      const viablePlants = Object.keys(plants.initialized)
+        .map(key => plants.initialized[key])
+        .filter(plant => {
+          return plant.spawn.biomes.includes(cell.biome.name);
+        });
+      return {
+        ...cell,
+        plant: state.percentTrue(30)
+          ? new plantsClasses[
+              (Math.floor(Math.random() * plantsClasses.length))
+            ]()
+          : null
+      };
+    });
+    state.updateCells(nextCells);
+  });
+
+  state.applyBiomes = action(() => {
+    const nextCells = state.game.world.cells.map(cell => {
+      return { ...cell, biome: state.getBiomeRandom() };
+    });
+    state.updateCells(nextCells);
+  });
+
+  state.applyCharacters = action(() => {
+    const nextCharacters = state.cells
+      .get()
+      .map(cell => {
+        return state.percentTrue(30) ? state.characterSpawn({ cell }) : null;
+      })
+      .filter(character => !!character);
+
+    state.updateCharacters(nextCharacters);
   });
 };
 

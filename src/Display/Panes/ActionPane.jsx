@@ -10,15 +10,13 @@ export default class ActionPane extends Component {
       <div
         style={{
           backgroundColor: colors.quaternary,
-          width: "100%",
-          height: "80%",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          padding: "20px",
           boxSizing: "border-box",
-          position: "fixed",
-          top: 0
+          overflow: "scroll",
+          minWidth: `100%`,
+          minHeight: `100%`
         }}
       >
         <Grid {...this.props} />

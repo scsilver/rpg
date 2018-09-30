@@ -3,8 +3,8 @@ import Wizard from "./Wizard";
 import animals from "./animals";
 
 const characters = {
-  human: new Human(),
-  wizard: new Wizard(),
+  Human,
+  Wizard,
   ...animals
 };
 

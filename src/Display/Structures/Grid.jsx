@@ -20,21 +20,38 @@ export default class Grid extends Component {
     const mouse = { x: event.clientX, y: event.clientY };
     this.setState({ mouse, tooltip: true, cell: cell });
   }, 500);
-
   render() {
     const cellCount = this.props.game.world.options.amount;
     const sideCellCount = this.props.game.world.options.side;
+    const size = 40;
     return (
       <div
         className="grid"
         style={{
-          maxWidth: `70vh`,
-          minHeight: `70vh`
+          maxWidth: size + `em`,
+          minHeight: size + `em`,
+          display: "flex",
+          flexWrap: "wrap"
         }}
       >
-        {this.props.cells.map((cell, i) => {
+        {" "}
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            justifyContent: "flex-start"
+          }}
+        >
+          <Player
+            {...this.props.game}
+            size={size}
+            options={this.props.game.world.options}
+          />
+        </div>
+        {this.props.cells.get().map((cell, i) => {
           return (
             <Cell
+              size={size}
               key={i}
               handleMouseMove={(e, cell) => {
                 {
@@ -49,7 +66,6 @@ export default class Grid extends Component {
             />
           );
         })}
-        <Player {...this.props.game} options={this.props.game.world.options} />
       </div>
     );
   }

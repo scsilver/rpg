@@ -22,33 +22,70 @@ export default class Cell extends Component {
   render() {
     const {
       cell,
-      cell: { position: { x, y }, biome, resources, character },
-      options
+      cell: { plant, position: { x, y }, biome, resources, character },
+      options,
+      size
     } = this.props;
+    if (character) {
+    }
     const hue = 0;
     const sat = 100;
     const lum = Math.ceil((this.props.cell.height * 0.8) % 100);
     return (
       <div
-        onMouseOver={e => this.props.handleMouseMove(e, cell)}
-        className={`cell x: ${x} y: ${y}`}
         style={{
+          minWidth: size / 10 + `em`,
+          maxWidth: size / 10 + `em`,
+          minHeight: size / 10 + `em`,
+          maxHeight: size / 10 + `em`,
           color: "white",
+          borderRadius: biome.name == "water" ? "10px" : "3px",
           backgroundColor: colors[biome.name],
-          minWidth: `${70 / options.side}vh`,
-          maxWidth: `${70 / options.side}vh`,
-          minHeight: `${70 / options.side}vh`,
-          maxHeight: `${70 / options.side}vh`,
-          display: "inline-block",
-          textAlign: "center",
-          overflow: "hidden"
+          display: "flex",
+          justifyContent: "center"
         }}
       >
-        {biome.emoji != "" ? (
-          biome.emoji
-        ) : (
-          character && character.health > 0 && character.emoji
-        )}
+        <div
+          onMouseOver={e => this.props.handleMouseMove(e, cell)}
+          className={`cell x: ${x} y: ${y}`}
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            overflow: "hidden"
+            //transform: "rotate3d(2, 0, 0, 45deg)"
+          }}
+        />
+        <div
+          style={{
+            top: "0",
+            left: "0",
+            marginTop: -size * 0.2 / 20 + "em",
+            marginLeft: -size * 0.5 / 20 + "em",
+            fontSize: size * 0.7 / 10 + "em",
+            maxHeight: "0px",
+            maxWidth: "0px"
+          }}
+        >
+          {(biome.emoji == "⛰️" && biome.emoji) ||
+            (plant &&
+              plant.inventory &&
+              plant.inventory.length > 0 &&
+              plant.emoji) ||
+            biome.emoji}
+        </div>
+
+        <div
+          style={{
+            left: 0,
+            top: 0,
+            display: "inline-flex",
+            fontSize: size * 0.5 / 20 + "em",
+            maxHeight: "0px",
+            maxWidth: "0px"
+          }}
+        >
+          {character && character.health > 0 && character.emoji}
+        </div>
       </div>
     );
   }

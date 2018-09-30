@@ -6,6 +6,7 @@ export default class Wizard extends Person {
   emoji = emojis.wizard;
   job = "wizard";
   magic = 70;
+  spawns = { biomes: ["mountains"] };
   playerInteraction = state => state.interaction({ name: "Gandolf" });
   playerDistantView = state => state.distantView({ name: "Gandolf" });
 }

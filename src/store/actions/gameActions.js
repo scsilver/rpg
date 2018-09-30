@@ -1,13 +1,8 @@
 import { observable, action, computed, autorun, get } from "mobx";
 import { biomes, characters } from "../../../assets/characters.js";
 import emojis from "../../../assets/emojis.js";
-import { objectToArray, percentTrue } from "../../../src/Helpers/helpers";
-import { characterSpawn } from "../../../factories/characterSpawn.js";
+import Position from "./../../../assets/Utils/Position";
 
-import {
-  cellsFactory,
-  getCellByPosition
-} from "../../../factories/cellsFactory.js";
 const initialGameState = {
   biomes,
   characters,
@@ -38,8 +33,8 @@ const initialWorldState = args => {
     options: {
       baseHeight: 1,
       heightVariance: 0.3,
-      amount: 900,
-      side: 30,
+      amount: 100,
+      side: 10,
       jobs: ["Ranger", "Wizard", "Knight"],
       races: ["Human", "Mage", "Elf"],
       orePicker: () =>
@@ -50,33 +45,9 @@ const initialWorldState = args => {
         return objectToArray(newBiomes).getRandomFromObject();
       }
     },
-    cells: []
+    cells: [],
+    characters: []
   };
-};
-const initialPlayerState = {
-  mentalState: {
-    interaction: "Feeling fine...",
-    environment: "Blissful..."
-  },
-  emoji: emojis.player,
-  inventory: [],
-  name: "Scott",
-  race: "jewBorne",
-  job: "none",
-  height: 67,
-  age: 27,
-  agility: 3,
-  attack: 3,
-  defense: 1,
-  health: 100,
-  hunger: 100,
-  xp: 5,
-  position: {
-    x: 1,
-    y: 1
-  },
-  orientationDeg: "0",
-  cellsAhead: [{}]
 };
 
 const addGameActions = state => {
@@ -111,22 +82,35 @@ const addGameActions = state => {
     });
   });
 
-  state.initializePlayer = action(() => {
-    state.updatePlayer({ ...initialPlayerState });
+  state.updateGame = action(function(game) {
+    state.game = { ...state.game, ...game };
+  });
+  state.updateWorld = action(function(world) {
+    state.updateGame({ world: { ...state.game.world, ...world } });
   });
 
-  state.getCellByPosition = ({ x, y }) => {
-    const id = x + Math.sqrt(state.game.world.options.amount) * y;
-    return state.game.world.cells[id];
-  };
-
-  state.updateCell = action(cell => {
-    state.game.world.cells[cell.id] = cell;
+  state.updateFullScreenPane = action(fullScreenPane => {
+    state.updateGame({
+      fullScreenPane: { ...state.game.fullScreenPane, ...fullScreenPane }
+    });
   });
-
-  state.updateCharacters = action(characters => {
-    state.game.world.characters = characters;
-    // state.playerCellsAhead();
+  state.updateEffectsPane = action(effectsPane => {
+    state.updateGame({
+      effectsPane: { ...state.game.effectsPane, ...effectsPane }
+    });
+  });
+  //Game Controls
+  state.saveGame = action(function(game) {
+    state.saves = [...state.saves, game];
+  });
+  state.loadGame = action(function(gameIndex) {
+    state.game = state.saves[gameIndex];
+  });
+  state.newGame = action(player => {
+    state.initializeGame();
+  });
+  state.newWorld = action(() => {
+    state.initializeWorld();
   });
 };
 export default addGameActions;

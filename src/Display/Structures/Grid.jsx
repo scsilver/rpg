@@ -6,7 +6,6 @@ import Player from "../Objects/Player.jsx";
 import { observer, Observer } from "mobx-react";
 import { observable, action, computed, autorun, get } from "mobx";
 
-@observer
 export default class Grid extends Component {
   constructor() {
     super();

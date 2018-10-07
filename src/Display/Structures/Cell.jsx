@@ -14,7 +14,7 @@ const resourceList = {
   water: { ore: false, food: true, material: false }
 };
 import { observer, Observer } from "mobx-react";
-@observer
+
 export default class Cell extends Component {
   static defaultProps = {
     options: { side: 30 }

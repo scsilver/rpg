@@ -10,7 +10,7 @@ import EffectsPane from "./Panes/EffectsPane.jsx";
 import NewGameWizard from "./Panes/NewGameWizard.jsx";
 
 import state from "../store/state.js";
-@observer
+
 class GameWindow extends Component {
   constructor(props) {
     super(props);

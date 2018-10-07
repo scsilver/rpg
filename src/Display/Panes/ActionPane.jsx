@@ -3,7 +3,6 @@ import Grid from "../Structures/Grid.jsx";
 import colors from "../../../styling/theme.js";
 import { observer, Observer } from "mobx-react";
 
-@observer
 export default class ActionPane extends Component {
   render() {
     return (

@@ -13,7 +13,11 @@
   },
   "author": "Scott Silverstein",
   "license": "ISC",
-  "devDependencies": {
+  "devDependencies": {},
+  "dependencies": {
+    "mobx": "^5.0.3",
+    "mobx-react": "^5.2.5",
+    "react": "^16.4.2",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
@@ -34,10 +38,5 @@
     "webpack": "^4.16.5",
     "webpack-cli": "^3.1.0",
     "webpack-dev-server": "^3.1.5"
-  },
-  "dependencies": {
-    "mobx": "^5.0.3",
-    "mobx-react": "^5.2.5",
-    "react": "^16.4.2"
   }
 }

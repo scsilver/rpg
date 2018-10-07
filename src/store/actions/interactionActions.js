@@ -1,11 +1,12 @@
 import { observable, action, computed, autorun, get } from "mobx";
-
+import Plant from "../../../assets/Environment/Plant";
 const addInteractionActions = state => {
   //Player Movement
   state.movePlayerForward = action(() => {
     state.updatePlayer({
       position: state.playerCellsAhead.get()[1].position
     });
+    state.moveCharacters();
   });
 
   state.turnPlayer = action(movementOrientation => {
@@ -14,6 +15,7 @@ const addInteractionActions = state => {
     state.updatePlayer({
       orientationDeg: movementOrientation
     });
+    state.moveCharacters();
   });
   //Character Interaction
   state.fight = action(() => {
@@ -62,8 +64,7 @@ const addInteractionActions = state => {
       .inventory.find(item => item.__proto__.constructor.name == "Seed");
     const newInventory = state.player
       .get()
-      .inventory.filter(item => item.__proto__.constructor.name != "Seed");
-    debugger;
+      .inventory.filter(item => item != seed);
     state.updateCell({
       ...state.playerCellsAhead.get()[0],
       plant: new Plant({ specie: seed.specie })
@@ -96,6 +97,26 @@ const addInteractionActions = state => {
       }
     } else {
       state.turnPlayer(movementOrientation);
+    }
+  });
+  state.moveCharacter = action((character, xOffset, yOffset) => {
+    const {
+      world: { options },
+      character: { orientationDeg, position: { x, y } }
+    } = state.game;
+    state.updateEffectsPane({ playerHealthHit: null });
+    const movementOrientation = Math.atan2(xOffset, -yOffset) * 180 / Math.PI;
+    if (movementOrientation == orientationDeg) {
+      if (
+        0 <= xOffset + x &&
+        xOffset + x < options.side &&
+        0 <= yOffset + y &&
+        yOffset + y < options.side
+      ) {
+        state.moveCharacter(character);
+      }
+    } else {
+      state.turnCharacter(character, movementOrientation);
     }
   });
   state.interactionProcess = action(actionToExec => {

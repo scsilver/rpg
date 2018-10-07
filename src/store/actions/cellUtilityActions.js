@@ -110,6 +110,67 @@ const addCellUtilityActions = state => {
     const deltaY = a.position.y - b.position.y;
     return Math.sqrt(deltaX * deltaX * deltaY * deltaY);
   };
+
+  state.binarySearchIndex = ({ value, array }) => {
+    let arrayA = array;
+    let arrayB = [];
+    let length = arrayA.length;
+    let ogLength = array.length;
+    let halfIndex = Math.floor(length / 2);
+    let centerValue = array[halfIndex];
+
+    while (halfIndex < ogLength) {
+      console.log(arrayA, arrayB, length, halfIndex, centerValue);
+
+      if (value < centerValue) {
+        arrayB = arrayA.slice(halfIndex + 1);
+        arrayA = arrayA.slice(0, halfIndex + 1);
+        length = arrayA.length;
+        halfIndex = Math.floor(length / 2);
+        centerValue = arrayA[halfIndex];
+        console.log("halfIndex", halfIndex, ogLength);
+      } else if (value > centerValue) {
+        arrayA = arrayB.slice(halfIndex + 1);
+        arrayB = arrayB.slice(0, halfIndex + 1);
+        length = arrayB.length;
+        halfIndex = Math.floor(length / 2);
+        centerValue = arrayB[halfIndex];
+      } else {
+        return halfIndex;
+      }
+    }
+    return false;
+  };
+
+  state.binaryObjectSearchIndex = ({ value, arrayOfObjects, key }) => {
+    let arrayA = arrayOfObjects;
+    let arrayB = [];
+    let length = arrayA.length;
+    let ogLength = arrayOfObjects.length;
+    let halfIndex = Math.floor(length / 2);
+    let centerValue = arrayOfObjects[halfIndex][key];
+
+    while (halfIndex < ogLength) {
+      console.log(arrayA, arrayB, length, halfIndex, centerValue);
+
+      if (value < centerValue) {
+        arrayB = arrayA.slice(halfIndex + 1);
+        arrayA = arrayA.slice(0, halfIndex + 1);
+        length = arrayA.length;
+        halfIndex = Math.floor(length / 2);
+        centerValue = arrayA[halfIndex][key];
+      } else if (value > centerValue) {
+        arrayA = arrayB.slice(halfIndex + 1);
+        arrayB = arrayB.slice(0, halfIndex + 1);
+        length = arrayB.length;
+        halfIndex = Math.floor(length / 2);
+        centerValue = arrayB[halfIndex][key];
+      } else {
+        return { centerValue, halfIndex };
+      }
+    }
+    return false;
+  };
 };
 
 export default addCellUtilityActions;

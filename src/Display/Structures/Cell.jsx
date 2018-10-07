@@ -19,6 +19,7 @@ export default class Cell extends Component {
   static defaultProps = {
     options: { side: 30 }
   };
+
   render() {
     const {
       cell,
@@ -34,10 +35,10 @@ export default class Cell extends Component {
     return (
       <div
         style={{
-          minWidth: size / 10 + `em`,
-          maxWidth: size / 10 + `em`,
-          minHeight: size / 10 + `em`,
-          maxHeight: size / 10 + `em`,
+          minWidth: size / 20 + `em`,
+          maxWidth: size / 20 + `em`,
+          minHeight: size / 20 + `em`,
+          maxHeight: size / 20 + `em`,
           color: "white",
           borderRadius: biome.name == "water" ? "10px" : "3px",
           backgroundColor: colors[biome.name],
@@ -70,7 +71,7 @@ export default class Cell extends Component {
             (plant &&
               plant.inventory &&
               plant.inventory.length > 0 &&
-              plant.emoji) ||
+              plant.getLifeStageEmoji()) ||
             biome.emoji}
         </div>
 

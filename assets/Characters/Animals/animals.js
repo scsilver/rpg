@@ -2,6 +2,7 @@ import Animal from "./Animal";
 import { animalNames } from "../lists.js";
 import biomes from "../Environment/Biomes/biomes";
 
+const animalsFactory=()
 const animals = {};
 animalNames.map(animalName => {
   const animal = {

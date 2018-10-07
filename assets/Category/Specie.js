@@ -1,6 +1,7 @@
 export default class Specie {
-  constructor({ name }) {
+  constructor({ name, spawn }) {
     this.name = name;
+    this.spawn = spawn;
     if (!Specie.instances) {
       Specie.instances = [this];
     }

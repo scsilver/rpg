@@ -3,6 +3,20 @@ import Character from "../../../assets/Characters/Character";
 import { characters } from "../../../assets/characterAssets";
 
 const addCharacterActions = state => {
+  state.moveCharacters = action(() => {
+    const newCharacters = state.characters.get().map(character => {
+      const cellsAhead = state.getCellsByPattern(character, 2, "lineFront");
+      character.position =
+        (cellsAhead && cellsAhead[1] && cellsAhead[1].position) ||
+        character.position;
+      debugger;
+      character.orientationDeg = [0, 90, 180, 270][
+        Math.floor(Math.random() * 4)
+      ];
+      return character;
+    });
+    state.updateCharacters(newCharacters);
+  });
   state.characterInteraction = action(({ cell }) => {
     if (cell.character && cell.character.health > 0) {
       debugger;

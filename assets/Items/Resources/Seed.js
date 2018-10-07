@@ -8,7 +8,10 @@ export default class Seed extends Resource {
     this.name = seedName;
     this.specie = specie || new Specie({ name });
     this.plantedTime = null;
-    this.emoji = emojis["seed"];
+    this.emoji =
+      (emojis.species[this.specie.name] &&
+        emojis.species[this.specie.name].seed) ||
+      "";
   }
   plant = position => {
     if (!this.plantedTime) {

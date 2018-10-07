@@ -33,8 +33,8 @@ const initialWorldState = args => {
     options: {
       baseHeight: 1,
       heightVariance: 0.3,
-      amount: 100,
-      side: 10,
+      amount: 400,
+      side: 20,
       jobs: ["Ranger", "Wizard", "Knight"],
       races: ["Human", "Mage", "Elf"],
       orePicker: () =>

@@ -3,7 +3,6 @@ import Plant from "./Plant";
 import Earth from "./Earth";
 import Position from "../Utils/Position";
 import characters from "../Characters/characters";
-import plants from "./plants";
 
 export default class Cell {
   constructor(
@@ -30,6 +29,5 @@ export default class Cell {
   setBiome = (biome = {}) => {
     this.biome = biome || new Biome();
     this.earth = new Earth({ biome });
-    this.plant = new Plant({ biome });
   };
 }

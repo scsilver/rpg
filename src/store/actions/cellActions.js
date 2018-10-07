@@ -1,7 +1,8 @@
 import { action, computed } from "mobx";
 import Cell from "../../../assets/Environment/Cell.js";
 import _ from "lodash";
-import plants from "../../../assets/Environment/plants";
+import { plantFactory } from "../../../assets/Environment/plants";
+import { species } from "../../../assets/Category/species";
 const addCellActions = state => {
   state.initializeCells = action(() => {
     const cells = [];
@@ -22,22 +23,16 @@ const addCellActions = state => {
   });
 
   state.applyPlants = action(() => {
-    const plantsClasses = Object.keys(plants)
-      .filter(key => key != "initialized")
-      .map(plantKey => plants[plantKey]);
     const nextCells = state.game.world.cells.map(cell => {
-      const viablePlants = Object.keys(plants.initialized)
-        .map(key => plants.initialized[key])
-        .filter(plant => {
-          return plant.spawn.biomes.includes(cell.biome.name);
-        });
+      const viableSpecies = species.plants.array.filter(specie => {
+        return specie.spawn.biomes.includes(cell.biome.name);
+      });
+      const specie =
+        viableSpecies[Math.floor(Math.random() * viableSpecies.length)];
+
       return {
         ...cell,
-        plant: state.percentTrue(30)
-          ? new plantsClasses[
-              (Math.floor(Math.random() * plantsClasses.length))
-            ]()
-          : null
+        plant: state.percentTrue(30) && specie ? plantFactory({ specie }) : null
       };
     });
     state.updateCells(nextCells);
@@ -54,7 +49,7 @@ const addCellActions = state => {
     const nextCharacters = state.cells
       .get()
       .map(cell => {
-        return state.percentTrue(30) ? state.characterSpawn({ cell }) : null;
+        return state.percentTrue(10) ? state.characterSpawn({ cell }) : null;
       })
       .filter(character => !!character);
 

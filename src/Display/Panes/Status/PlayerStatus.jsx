@@ -15,6 +15,7 @@ const PlayerStatus = props => {
     hunger,
     health,
     xp,
+    inventory,
     cellsAhead
   } = props;
   return (
@@ -52,6 +53,10 @@ const PlayerStatus = props => {
         </h3>
         <h3 style={{ margin: 0, lineHeight: 1.2 }}>
           Health {health.toString().split(".")[0]}
+        </h3>
+        <h3 style={{ margin: 0, lineHeight: 1.2 }}>
+          Inventory
+          {inventory.map(item => item.emoji)}
         </h3>
       </div>
       {/*<div style={{ display: "flex", padding: "10px", flexDirection: "row" }}>

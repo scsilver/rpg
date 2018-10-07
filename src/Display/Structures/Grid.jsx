@@ -31,7 +31,8 @@ export default class Grid extends Component {
           maxWidth: size + `em`,
           minHeight: size + `em`,
           display: "flex",
-          flexWrap: "wrap"
+          flexWrap: "wrap",
+          transformOrigin: `${this.props.player.get()}`
         }}
       >
         {" "}
@@ -51,6 +52,7 @@ export default class Grid extends Component {
         {this.props.cells.get().map((cell, i) => {
           return (
             <Cell
+              {...this.props}
               size={size}
               key={i}
               handleMouseMove={(e, cell) => {

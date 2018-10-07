@@ -14,9 +14,7 @@ export default class ActionPane extends Component {
           justifyContent: "center",
           alignItems: "center",
           boxSizing: "border-box",
-          overflow: "scroll",
-          minWidth: `100%`,
-          minHeight: `100%`
+          overflow: "scroll"
         }}
       >
         <Grid {...this.props} />

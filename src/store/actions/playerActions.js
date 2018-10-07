@@ -21,7 +21,7 @@ const initialPlayerState = {
   health: 100,
   hunger: 100,
   xp: 5,
-  position: new Position({ x: 0, y: 0 }),
+  position: new Position({ x: 9, y: 9 }),
   orientationDeg: "0",
   cellsAhead: [{}]
 };

@@ -8,6 +8,7 @@ import InfoPane from "./Panes/InfoPane.jsx";
 import FullScreenPane from "./Panes/FullScreenPane.jsx";
 import EffectsPane from "./Panes/EffectsPane.jsx";
 import NewGameWizard from "./Panes/NewGameWizard.jsx";
+import _ from "lodash";
 
 import state from "../store/state.js";
 

@@ -1,4 +1,4 @@
-import skills from "./Skills.ts";
+import skills from "./Skills";
 import Position from "../Utils/Position";
 import biomes from "../Environment/Biomes/biomes";
 export default class Character {

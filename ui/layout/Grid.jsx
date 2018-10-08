@@ -11,8 +11,11 @@ const Box = (
     paddingRight = 0,
     paddingTop = 0,
     paddingBottom = 0,
+
+    marginBottom = 0,
     children,
     position,
+    flexBasis = "100%",
     className = null,
     tabIndex = "0",
     onKeyDown = () => {},
@@ -28,7 +31,7 @@ const Box = (
         ...restOfProps,
         display: "flex",
         flexWrap: "wrap",
-        flexBasis: "100%",
+        flexBasis: `${flexBasis}`,
         fontFamily: "Josefin Slab",
         width: `${position == "fixed" ? "100%" : null}`,
         height: `${height ? height + "em" : "100%"}`,
@@ -37,6 +40,7 @@ const Box = (
         paddingRight: `${paddingRight}em`,
         paddingTop: `${paddingTop}em`,
         paddingBottom: `${paddingBottom}em`,
+        marginBottom: `${marginBottom}em`,
         justifyContent: `${justifyContent}`,
         alignItems: `${alignItems}`,
         flexDirection: `${flexDirection}`,
@@ -76,4 +80,63 @@ const Column = (
     </div>
   );
 };
-export { Box, Column };
+
+const ProgressBar = (
+  {
+    height = 1,
+    percent = 0,
+    barColor = "red",
+    backgroundColor = "lightgrey"
+  } = {}
+) => {
+  return (
+    <Box
+      display="flex"
+      flexDirection="row"
+      backgroundColor={backgroundColor}
+      flexBasis="auto"
+      height={height}
+      justifyContent="start"
+      marginBottom={0.5}
+    >
+      <Box
+        display="flex"
+        flexBasis={`${percent}%`}
+        backgroundColor={barColor}
+      />
+    </Box>
+  );
+};
+const Typography = ({
+  tag,
+  fontSize = 1,
+  fontWeight,
+  display = "inline-flex",
+  textAlign = "start",
+  color,
+  fontFamily = "Josefin Slab",
+  backgroundColor,
+  lineHeight,
+  marginBottom = 0,
+  children
+}) => {
+  const customTag = `${tag}`;
+  return (
+    <customTag
+      style={{
+        fontFamily,
+        display,
+        textAlign,
+        backgroundColor,
+        fontSize: `${fontSize}em`,
+        fontWeight,
+        color,
+        lineHeight: `${lineHeight}em`,
+        marginBottom: `${marginBottom}em`
+      }}
+    >
+      {children}
+    </customTag>
+  );
+};
+export { Typography, Box, Column, ProgressBar };

@@ -3,7 +3,11 @@ import { biomes } from "../../../assets/biomeAssets";
 
 const addBiomeActions = state => {
   state.getBiomeRandom = () => {
-    return state.getRandomFromObject(biomes);
+    return state.percentPicker(
+      state
+        .objectToArray(biomes)
+        .map(biome => ({ ...biome, chance: 1, name: biome.name }))
+    );
   };
 
   state.biomeInteraction = action(({ cell }) => {

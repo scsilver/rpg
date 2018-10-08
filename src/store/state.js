@@ -43,19 +43,19 @@ var disposer = state.playerCellsAhead.observe(change => {
     cell => (cell && cell.position) || null
   );
 
-  console.log("playerCellsAhead", change, cellsAhead[1], cellsAhead[2]);
+  console.log("playerCellsAhead", [change, cellsAhead[1], cellsAhead[2]]);
 });
 var disposer2 = state.cells.observe(change => {
   const cells = change.newValue.map(cell => (cell && cell.character) || null);
 
-  console.log("cells", change, cells);
+  console.log("cells", { change, cells });
 });
 var disposer3 = state.characters.observe(change => {
   const characters = change.newValue.map(character => character || null);
 
-  console.log("characters", change, characters);
+  console.log("characters", { change, characters });
 });
 var disposer4 = state.state.observe(change => {
-  console.log("state", change);
+  console.log("state", { change });
 });
 module.exports = state;

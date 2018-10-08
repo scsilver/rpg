@@ -13,7 +13,27 @@ const resourceList = {
   fish: { ore: false, food: true, material: false },
   water: { ore: false, food: true, material: false }
 };
+
 import { observer, Observer } from "mobx-react";
+const Sprite = ({ emoji, options, size, sizer }) => {
+  debugger;
+  return (
+    <div
+      style={{
+        top: sizer * -size / 4 / options.side + "em",
+
+        left: -size / 4 / options.side + "em",
+        position: "relative",
+        textAlign: "center",
+        fontSize: sizer * size / options.side / 2 + "em",
+        maxHeight: "0em",
+        maxWidth: "0em"
+      }}
+    >
+      {emoji}
+    </div>
+  );
+};
 
 export default class Cell extends Component {
   static defaultProps = {
@@ -43,6 +63,7 @@ export default class Cell extends Component {
           color: "white",
           borderRadius: biome.name == "water" ? "10px" : "3px",
           backgroundColor: colors[biome.name],
+          alignItems: "center",
           display: "flex",
           justifyContent: "center"
         }}
@@ -57,37 +78,29 @@ export default class Cell extends Component {
             //transform: "rotate3d(2, 0, 0, 45deg)"
           }}
         />
-        <div
-          style={{
-            top: "0",
-            left: "0",
-            marginTop: -size * 0.2 / 20 + "em",
-            marginLeft: -size * 0.5 / 20 + "em",
-            fontSize: size * 0.7 / 10 + "em",
-            maxHeight: "0px",
-            maxWidth: "0px"
-          }}
-        >
-          {(biome.emoji == "⛰️" && biome.emoji) ||
-            (plant &&
-              plant.inventory &&
-              plant.inventory.length > 0 &&
-              plant.getLifeStageEmoji()) ||
-            biome.emoji}
-        </div>
 
-        <div
-          style={{
-            left: 0,
-            top: 0,
-            display: "inline-flex",
-            fontSize: size * 0.5 / 20 + "em",
-            maxHeight: "0px",
-            maxWidth: "0px"
-          }}
-        >
-          {character && character.health > 0 && character.emoji}
-        </div>
+        <Sprite size={size} sizer={2} options={options} emoji={biome.emoji} />
+        <Sprite
+          size={size}
+          options={options}
+          emoji={
+            plant &&
+            plant.inventory &&
+            plant.inventory.length > 0 &&
+            plant.getLifeStageEmoji()
+          }
+        />
+        <Sprite
+          size={size}
+          options={options}
+          emoji={
+            character && character.health > 0 && character.emoji ? (
+              character.emoji
+            ) : (
+              ""
+            )
+          }
+        />
       </div>
     );
   }

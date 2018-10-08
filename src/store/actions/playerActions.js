@@ -33,7 +33,6 @@ const addPlayerActions = state => {
     state.updatePlayer({ health: newHealth });
   });
   state.updatePlayer = action(function(player) {
-    debugger;
     state.updateGame({ player: { ...state.game.player, ...player } });
   });
 };

@@ -31,7 +31,10 @@ export default class Grid extends Component {
           minHeight: size + `em`,
           display: "flex",
           flexWrap: "wrap",
-          transformOrigin: `${this.props.player.get()}`
+
+          transform: "scaleX(4) scaleY(4)",
+          transformOrigin: `${this.props.player.get().position
+            .x}em ${this.props.player.get().position.y}em`
         }}
       >
         {" "}

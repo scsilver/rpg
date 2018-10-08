@@ -1,6 +1,7 @@
 import React from "react";
 import colors from "../../../../styling/theme.js";
 import Cell from "../../Structures/Cell.jsx";
+import { ProgressBar, Typography } from "../../../../ui/layout/Grid.jsx";
 import { observer, Observer } from "mobx-react";
 
 const PlayerStatus = props => {
@@ -23,20 +24,49 @@ const PlayerStatus = props => {
       <div
         style={{ display: "flex", padding: "10px", flexDirection: "column" }}
       >
-        <h1 style={{ margin: 0 }}>Player</h1>
-        <h3 style={{ margin: 0, lineHeight: 1.2 }}>{name}</h3>
-        <h3 style={{ margin: 0, lineHeight: 1.2 }}>{job}</h3>
-        <h3 style={{ margin: 0, lineHeight: 1.2 }}>{race}</h3>
-        <h3 style={{ margin: 0, lineHeight: 1.2 }}>{age} y/o</h3>
+        {[
+          { label: "Player", value: false, color: "green" },
+          { label: "Name", value: name, color: "lightorange" },
+          { label: "Job", value: job, color: "red" },
+          { label: "Race", value: race, color: "purple" },
+          { label: "Age:", value: age, color: "purple" }
+        ]
+          .map(bio => {
+            return {
+              tag: bio.label == "Player" ? "h1" : "h3",
+              text: !!bio.value ? `${bio.label + ": " + bio.value}` : bio.label
+            };
+          })
+          .map(({ tag, text } = typeography) => {
+            return <Typography tag={tag}>{text}</Typography>;
+          })}
       </div>
       <div
         style={{ display: "flex", padding: "10px", flexDirection: "column" }}
       >
         <h1 style={{ margin: 0 }}>Skills</h1>
-        <h3 style={{ margin: 0, lineHeight: 1.2 }}>XP {xp}</h3>
-        <h3 style={{ margin: 0, lineHeight: 1.2 }}>Attack {attack}</h3>
-        <h3 style={{ margin: 0, lineHeight: 1.2 }}>Defense {defense}</h3>
-        <h3 style={{ margin: 0, lineHeight: 1.2 }}>Agility {agility}</h3>
+
+        <ProgressBar percent={xp} />
+        {[
+          { label: "XP", value: xp, color: "green" },
+          { label: "Agility", value: agility, color: "lightorange" },
+          { label: "Attack", value: attack, color: "red" },
+          { label: "Defence", value: defense, color: "purple" }
+        ].map(stat => {
+          return (
+            <React.Fragment>
+              <Typography
+                tag="h3"
+                fontWeight="bold"
+                fontSize={1.2}
+                lineHeight={1}
+              >
+                {stat.label}: {stat.value}
+              </Typography>
+              <ProgressBar barColor={stat.color} percent={stat.value} />
+            </React.Fragment>
+          );
+        })}
       </div>
       <div
         style={{ display: "flex", padding: "10px", flexDirection: "column" }}

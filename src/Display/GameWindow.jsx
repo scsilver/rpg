@@ -28,6 +28,12 @@ class GameWindow extends Component {
     leading: true
   });
   render() {
+    console.log("chance", {
+      change: state.percentPicker([
+        { name: "a", chance: 1 },
+        { name: "b", chance: 2 }
+      ])
+    });
     return (
       <Observer>
         {() => (

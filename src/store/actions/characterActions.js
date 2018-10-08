@@ -6,10 +6,49 @@ const addCharacterActions = state => {
   state.moveCharacters = action(() => {
     const newCharacters = state.characters.get().map(character => {
       const cellsAhead = state.getCellsByPattern(character, 2, "lineFront");
-      character.position =
-        (cellsAhead && cellsAhead[1] && cellsAhead[1].position) ||
-        character.position;
-      debugger;
+      const newCell = cellsAhead && cellsAhead[1];
+      const newPosition = (newCell && newCell.position) || character.position;
+      if (newPosition && newCell) {
+        switch (character.name) {
+          case "fish":
+            if (newCell.biome.name == "water") {
+              character.position = newPosition;
+            }
+            break;
+
+          case "bird":
+            if (
+              newCell.biome.name == "forest" ||
+              newCell.biome.name == "plain" ||
+              newCell.biome.name == "mountain" ||
+              newCell.biome.name == "beach" ||
+              newCell.biome.name == "water"
+            ) {
+              character.position = newPosition;
+            }
+            break;
+          case "crab":
+            if (
+              newCell.biome.name == "beach" ||
+              newCell.biome.name == "water" ||
+              newCell.biome.name == "plain"
+            ) {
+              character.position = newPosition;
+            }
+            break;
+          case "snake":
+            if (
+              newCell.biome.name == "forest" ||
+              newCell.biome.name == "plain"
+            ) {
+              character.position = newPosition;
+            }
+            break;
+          default:
+            character.position = newPosition;
+            break;
+        }
+      }
       character.orientationDeg = [0, 90, 180, 270][
         Math.floor(Math.random() * 4)
       ];
@@ -19,7 +58,6 @@ const addCharacterActions = state => {
   });
   state.characterInteraction = action(({ cell }) => {
     if (cell.character && cell.character.health > 0) {
-      debugger;
       switch (cell.character.name) {
         case "crab":
         case "bird":
@@ -37,7 +75,7 @@ const addCharacterActions = state => {
   });
 
   state.getCharacterRandom = ({ cell } = {}) => {
-    const character = state.getRandomFromObject(characters)({
+    const character = state.percentPicker(state.objectToArray(characters))({
       cell,
       position: cell.position
     });
@@ -46,7 +84,6 @@ const addCharacterActions = state => {
   };
 
   state.updateCharacters = action(characters => {
-    debugger;
     state.game.world.characters = characters;
   });
 

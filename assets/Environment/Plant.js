@@ -14,7 +14,7 @@ export default class Plant extends Source {
     this.seed = new Seed({ specie });
     this.fruit = new Fruit({ specie });
     this.wood = new Wood({ specie });
-    debugger;
+    
     this.sapling = { emoji: emojis["sapling"] };
     this.emoji = emojis.species[specie.name].plant;
     this.spawnTime = new Date();

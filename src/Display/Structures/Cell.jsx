@@ -25,6 +25,7 @@ export default class Cell extends Component {
       cell,
       cell: { plant, position: { x, y }, biome, resources, character },
       options,
+      options: { side },
       size
     } = this.props;
     if (character) {
@@ -35,10 +36,10 @@ export default class Cell extends Component {
     return (
       <div
         style={{
-          minWidth: size / 20 + `em`,
-          maxWidth: size / 20 + `em`,
-          minHeight: size / 20 + `em`,
-          maxHeight: size / 20 + `em`,
+          minWidth: size / side + `em`,
+          maxWidth: size / side + `em`,
+          minHeight: size / side + `em`,
+          maxHeight: size / side + `em`,
           color: "white",
           borderRadius: biome.name == "water" ? "10px" : "3px",
           backgroundColor: colors[biome.name],

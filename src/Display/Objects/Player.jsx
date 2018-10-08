@@ -15,18 +15,22 @@ export default class Player extends Component {
           // block: "center"
         }
       );
-    const { player, size, world: { cells, options } } = this.props;
+    const {
+      player,
+      size,
+      world: { cells, options, options: { side } }
+    } = this.props;
     const orientationRad = degToRad(player.orientationDeg);
     return (
       <div
         ref={this.ref}
         style={{
           position: "relative",
-          maxHeight: `${size / 20}` + `em`,
-          transform: `translate(${size / 20 * player.position.x}em,${size /
-            20 *
+          maxHeight: `${size / side}` + `em`,
+          transform: `translate(${size / side * player.position.x}em,${size /
+            side *
             player.position.y +
-            size / 20}em)  rotate(${player.orientationDeg + 180}deg)`,
+            size / side}em)  rotate(${player.orientationDeg + 180}deg)`,
           transformOrigin: `50% 50%`,
           textAlign: "center",
           verticalAlign: "center"

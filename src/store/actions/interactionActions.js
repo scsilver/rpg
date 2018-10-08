@@ -209,6 +209,7 @@ const addInteractionActions = state => {
   });
 
   state.handleKeyPress = action(event => {
+    debugger;
     const viewOrientation = 1;
     if (!state.game.newGameWizard.visible) {
       switch (event.key) {

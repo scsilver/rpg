@@ -22,7 +22,7 @@ export default class Grid extends Component {
   render() {
     const cellCount = this.props.game.world.options.amount;
     const sideCellCount = this.props.game.world.options.side;
-    const size = 40;
+    const size = 50;
     return (
       <div
         className="grid"

@@ -5,19 +5,6 @@ import { observer, Observer } from "mobx-react";
 
 export default class ActionPane extends Component {
   render() {
-    return (
-      <div
-        style={{
-          backgroundColor: colors.quaternary,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          boxSizing: "border-box",
-          overflow: "scroll"
-        }}
-      >
-        <Grid {...this.props} />
-      </div>
-    );
+    return <Grid {...this.props} />;
   }
 }

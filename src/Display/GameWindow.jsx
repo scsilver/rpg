@@ -8,7 +8,7 @@ import InfoPane from "./Panes/InfoPane.jsx";
 import FullScreenPane from "./Panes/FullScreenPane.jsx";
 import EffectsPane from "./Panes/EffectsPane.jsx";
 import NewGameWizard from "./Panes/NewGameWizard.jsx";
-import _ from "lodash";
+import { Box, Column } from "../../ui/layout/Grid.jsx";
 
 import state from "../store/state.js";
 
@@ -31,7 +31,7 @@ class GameWindow extends Component {
     return (
       <Observer>
         {() => (
-          <div
+          <Box
             className="GameWindow"
             tabIndex="0"
             onKeyDown={this.state.handleKeyPress}
@@ -47,15 +47,27 @@ class GameWindow extends Component {
             />
 
             <EffectsPane {...this.state.game.effectsPane} />
-            <ActionPane
-              {...this.state}
-              gameControls={{ newWorld: this.state.newWorld }}
-            />
-            <InfoPane
-              {...this.state}
-              gameControls={{ newWorld: this.state.newWorld }}
-            />
-          </div>
+            <Box
+              height={40}
+              backgroundImage="url(https://images.template.net/wp-content/uploads/2017/01/07045821/White-Parchment-Paper-Texture.jpg)"
+            >
+              <ActionPane
+                {...this.state}
+                gameControls={{ newWorld: this.state.newWorld }}
+              />
+            </Box>
+            <Box
+              height={10}
+              backgroundImage="url(https://images.template.net/wp-content/uploads/2017/01/07045821/White-Parchment-Paper-Texture.jpg)"
+              position="fixed"
+              bottom={0}
+            >
+              <InfoPane
+                {...this.state}
+                gameControls={{ newWorld: this.state.newWorld }}
+              />
+            </Box>
+          </Box>
         )}
       </Observer>
     );

@@ -5,12 +5,13 @@ import { plantFactory } from "../../../assets/Environment/plants";
 import { species } from "../../../assets/Category/species";
 const addCellActions = state => {
   state.initializeCells = action(() => {
+    const { side } = state.game.world.options;
     const cells = [];
-    _.times(state.game.world.options.side, y =>
-      _.times(state.game.world.options.side, x =>
-        cells.push(new Cell({ position: { x, y } }))
-      )
+    _.times(side, y =>
+      _.times(side, x => cells.push(new Cell({ position: { x, y } })))
     );
+    const newCells = new Map(Object.entries(cells));
+
     state.updateCells(cells);
   });
 

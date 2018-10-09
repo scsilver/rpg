@@ -22,7 +22,7 @@ const initialPlayerState = {
   hunger: 100,
   xp: 5,
   position: new Position({ x: 9, y: 9 }),
-  orientationDeg: "0",
+  orientationDeg: 0,
   cellsAhead: [{}]
 };
 const addPlayerActions = state => {

@@ -1,6 +1,9 @@
-import Specie from "./Specie";
-import animalsList from "../Characters/animals";
+//fixed amount 5 species
 
+//product class
+import Specie from "./Specie";
+
+//factory
 const speciesFactory = ({ name = "" } = {}) => {
   switch (name) {
     case "corn":
@@ -20,11 +23,15 @@ const speciesFactory = ({ name = "" } = {}) => {
       break;
   }
 };
+
+//production
 const Apple = speciesFactory({ name: "apple" });
 const Corn = speciesFactory({ name: "corn" });
 const Strawberry = speciesFactory({ name: "strawberry" });
 const Iron = speciesFactory({ name: "iron" });
 const Copper = speciesFactory({ name: "copper" });
+
+//packaging
 const species = {
   plants: {
     object: { Apple, Corn, Strawberry },
@@ -35,4 +42,6 @@ const species = {
     array: [Iron, Copper]
   }
 };
+
+//export
 export { species };

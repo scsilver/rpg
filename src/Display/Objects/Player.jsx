@@ -27,13 +27,14 @@ export default class Player extends Component {
         style={{
           position: "relative",
           maxHeight: `${size / side}` + `em`,
-          transform: `translate(${size / side * player.position.x}em,${size /
+          transform: `translate3d(${size / side * player.position.x}em,${size /
             side *
             player.position.y +
-            size / side}em)  rotate(${player.orientationDeg + 180}deg)`,
+            size / side}em,1em) rotateX(-90deg) rotateY(${orientationRad}deg)`,
           transformOrigin: `50% 50%`,
           textAlign: "center",
-          verticalAlign: "center"
+          verticalAlign: "center",
+          transformStyle: "preserve-3d"
         }}
       >
         {player.emoji}

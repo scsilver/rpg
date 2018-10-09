@@ -1,5 +1,8 @@
 import { action } from "mobx";
 const addProbabilityActions = state => {
+  state.getRandomFromArray = array => {
+    return array[Math.floor(Math.random() * array.length)];
+  };
   state.percentTrue = percent => {
     return Math.random() <= percent / 100;
   };

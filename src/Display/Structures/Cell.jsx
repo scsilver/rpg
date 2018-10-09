@@ -27,7 +27,10 @@ const Sprite = ({ emoji, options, size, sizer }) => {
         textAlign: "center",
         fontSize: sizer * size / options.side / 2 + "em",
         maxHeight: "0em",
-        maxWidth: "0em"
+        maxWidth: "0em",
+        transformStyle: "preserve-3d",
+
+        transform: `translate3d(0,0,1.3em) rotateZ(45deg) rotate3d(-1,0,0,90deg)`
       }}
     >
       {emoji}
@@ -61,7 +64,6 @@ export default class Cell extends Component {
           minHeight: size / side + `em`,
           maxHeight: size / side + `em`,
           color: "white",
-          borderRadius: biome.name == "water" ? "10px" : "3px",
           backgroundColor: colors[biome.name],
           alignItems: "center",
           display: "flex",
@@ -75,7 +77,6 @@ export default class Cell extends Component {
             display: "flex",
             justifyContent: "center",
             overflow: "hidden"
-            //transform: "rotate3d(2, 0, 0, 45deg)"
           }}
         />
 

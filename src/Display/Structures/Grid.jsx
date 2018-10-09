@@ -22,6 +22,8 @@ export default class Grid extends Component {
   render() {
     const cellCount = this.props.game.world.options.amount;
     const sideCellCount = this.props.game.world.options.side;
+    const side = this.props.game.world.options.side;
+    const player = this.props.player.get();
     const size = 50;
     return (
       <div
@@ -31,10 +33,13 @@ export default class Grid extends Component {
           minHeight: size + `em`,
           display: "flex",
           flexWrap: "wrap",
-
-          transform: "scaleX(4) scaleY(4)",
-          transformOrigin: `${this.props.player.get().position
-            .x}em ${this.props.player.get().position.y}em`
+          transformStyle: "preserve-3d",
+          transformOrigin: `${size / side * player.position.x}em ${size /
+            side *
+            player.position.y -
+            size / side}em`,
+          transform: `scaleX(2) scaleY(2)  rotate3D(1,0,0, 60deg) rotateZ(-${player.orientationDeg}deg)`,
+          transition: "transform 1s"
         }}
       >
         {" "}

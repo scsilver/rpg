@@ -4,25 +4,25 @@ import biomes from "../Environment/Biomes/biomes";
 
 class Bird extends Animal {
   constructor(props) {
-    super({ name: "bird" });
+    super({ specie: "bird" });
   }
   spawn = { biomes: ["mountains", "plains", "forest"] };
 }
 class Crab extends Animal {
   constructor(props) {
-    super({ name: "crab" });
+    super({ specie: "crab" });
   }
   spawn = { biomes: ["beach"] };
 }
 class Snake extends Animal {
   constructor(props) {
-    super({ name: "snake" });
+    super({ specie: "snake" });
   }
   spawn = { biomes: ["forest", "plains"] };
 }
 class Fish extends Animal {
   constructor(props) {
-    super({ name: "fish" });
+    super({ specie: "fish" });
   }
   spawn = { biomes: ["water"] };
 }

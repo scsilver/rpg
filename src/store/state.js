@@ -1,13 +1,11 @@
 import { observable, action, computed, autorun, get } from "mobx";
-import { objectToArray, percentTrue } from "../../src/Helpers/helpers";
-import { biomes, characters } from "../../assets/characters.js";
 
-import emojis from "../../assets/emojis.js";
-import _ from "lodash";
-import addActions from "./actions/actions";
+import { addActions, addAct } from "./actions";
 import addComputed from "./computed";
-
+const store = observable({});
 const state = observable({
+  world: {},
+  positions: [],
   fullScreenPane: {
     playerDied: false,
     visible: false,
@@ -24,12 +22,12 @@ const state = observable({
   },
   game: { player: {} },
   cellHistory: [],
-  saves: []
+  saves: [],
+  ...addActions
 });
-
-addActions(state);
 addComputed(state);
-
+addAct(state);
+//state.initializePositions();
 autorun(() => {
   console.log("autorun", state.get()); // get can track not yet existing properties
   console.log("cells", state.cells.get()); // get can track not yet existing properties

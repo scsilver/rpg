@@ -10,8 +10,6 @@ const addInteractionActions = state => {
   });
 
   state.turnPlayer = action(movementOrientation => {
-    const { orientationDeg } = state.player.get();
-
     state.updatePlayer({
       orientationDeg: movementOrientation
     });
@@ -86,17 +84,13 @@ const addInteractionActions = state => {
     } = state.game;
     state.updateEffectsPane({ playerHealthHit: null });
     const movementOrientation = Math.atan2(xOffset, -yOffset) * 180 / Math.PI;
-    if (movementOrientation == orientationDeg) {
-      if (
-        0 <= xOffset + x &&
-        xOffset + x < options.side &&
-        0 <= yOffset + y &&
-        yOffset + y < options.side
-      ) {
-        state.interactionProcess(state.move);
-      }
-    } else {
-      state.turnPlayer(movementOrientation);
+    if (
+      0 <= xOffset + x &&
+      xOffset + x < options.side &&
+      0 <= yOffset + y &&
+      yOffset + y < options.side
+    ) {
+      state.interactionProcess(state.move);
     }
   });
   state.moveCharacter = action((character, xOffset, yOffset) => {
@@ -209,28 +203,28 @@ const addInteractionActions = state => {
   });
 
   state.handleKeyPress = action(event => {
-    const viewOrientation = 1;
+    const orientationDeg = state.player.get().orientationDeg;
     if (!state.game.newGameWizard.visible) {
       switch (event.key) {
         case "d":
         case "ArrowRight":
-          state.movePlayer(viewOrientation * 1, 0);
+          state.turnPlayer(orientationDeg + 90);
           break;
         case "a":
 
         case "ArrowLeft":
-          state.movePlayer(viewOrientation * -1, 0);
+          state.turnPlayer(orientationDeg - 90);
           break;
 
         case "w":
 
         case "ArrowUp":
-          state.movePlayer(0, -1 * viewOrientation);
+          state.movePlayer(0, -1);
           break;
         case "s":
 
         case "ArrowDown":
-          state.movePlayer(0, 1 * viewOrientation);
+          state.turnPlayer(orientationDeg - 180);
           break;
 
         default:

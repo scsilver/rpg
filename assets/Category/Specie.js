@@ -1,3 +1,4 @@
+//fixed amount
 export default class Specie {
   constructor({ name, spawn }) {
     this.name = name;

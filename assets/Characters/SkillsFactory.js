@@ -1,3 +1,4 @@
+//variable instances, used by character
 class FightingSkills {
   attack = 0;
   defense = 0;
@@ -9,9 +10,9 @@ class ResourcingSkills {
   chopping = 0;
 }
 
-const skills = {
+const skillsFactory = () => ({
   fighting: new FightingSkills(),
   resourcing: new ResourcingSkills()
-};
+});
 
-export default skills;
+export default skillsFactory;

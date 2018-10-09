@@ -212,9 +212,7 @@ const addInteractionActions = state => {
         case "a":
 
         case "ArrowLeft":
-          state.turnPlayer(
-            orientationDeg - 90 == -90 ? 270 : orientationDeg - 90
-          );
+          state.turnPlayer(orientationDeg - 90);
           break;
 
         case "w":

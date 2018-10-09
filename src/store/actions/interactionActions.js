@@ -11,7 +11,7 @@ const addInteractionActions = state => {
 
   state.turnPlayer = action(movementOrientation => {
     state.updatePlayer({
-      orientationDeg: movementOrientation
+      orientationDeg: movementOrientation % 360
     });
     state.moveCharacters();
   });
@@ -83,7 +83,6 @@ const addInteractionActions = state => {
       player: { orientationDeg, position: { x, y } }
     } = state.game;
     state.updateEffectsPane({ playerHealthHit: null });
-    const movementOrientation = Math.atan2(xOffset, -yOffset) * 180 / Math.PI;
     if (
       0 <= xOffset + x &&
       xOffset + x < options.side &&
@@ -213,7 +212,9 @@ const addInteractionActions = state => {
         case "a":
 
         case "ArrowLeft":
-          state.turnPlayer(orientationDeg - 90);
+          state.turnPlayer(
+            orientationDeg - 90 == -90 ? 270 : orientationDeg - 90
+          );
           break;
 
         case "w":
@@ -224,7 +225,7 @@ const addInteractionActions = state => {
         case "s":
 
         case "ArrowDown":
-          state.turnPlayer(orientationDeg - 180);
+          state.turnPlayer(orientationDeg + 180);
           break;
 
         default:

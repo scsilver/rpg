@@ -54,6 +54,7 @@ const addCellUtilityActions = state => {
   };
 
   state.patternToOffsetArray = args => {
+    debugger;
     const { rOffsets, xOffsets, yOffsets } = args;
     const offSetArray = [];
     rOffsets.map(rOffset =>

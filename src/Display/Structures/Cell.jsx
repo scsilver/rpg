@@ -15,7 +15,7 @@ const resourceList = {
 };
 
 import { observer, Observer } from "mobx-react";
-const Sprite = ({ emoji, options, size, sizer }) => {
+const Sprite = ({ emoji, options, size, sizer, player }) => {
   debugger;
   return (
     <div
@@ -23,14 +23,14 @@ const Sprite = ({ emoji, options, size, sizer }) => {
         top: sizer * -size / 4 / options.side + "em",
 
         left: -size / 4 / options.side + "em",
-        position: "relative",
         textAlign: "center",
         fontSize: sizer * size / options.side / 2 + "em",
-        maxHeight: "0em",
-        maxWidth: "0em",
+        maxHeight: "1em",
+        maxWidth: "1em",
         transformStyle: "preserve-3d",
-
-        transform: `translate3d(0,0,1.3em) rotateZ(45deg) rotate3d(-1,0,0,90deg)`
+        transition: `transform 1s`,
+        transformOrigin: "50% 50%",
+        transform: `translate3d(0em,0,0.8em) rotateZ(${player.orientationDeg}deg) rotateX(-90deg) `
       }}
     >
       {emoji}
@@ -49,7 +49,8 @@ export default class Cell extends Component {
       cell: { plant, position: { x, y }, biome, resources, character },
       options,
       options: { side },
-      size
+      size,
+      player
     } = this.props;
     if (character) {
     }
@@ -80,8 +81,15 @@ export default class Cell extends Component {
           }}
         />
 
-        <Sprite size={size} sizer={2} options={options} emoji={biome.emoji} />
         <Sprite
+          player={player}
+          size={size}
+          sizer={2}
+          options={options}
+          emoji={biome.emoji}
+        />
+        <Sprite
+          player={player}
           size={size}
           options={options}
           emoji={
@@ -92,6 +100,7 @@ export default class Cell extends Component {
           }
         />
         <Sprite
+          player={player}
           size={size}
           options={options}
           emoji={

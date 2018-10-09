@@ -36,9 +36,9 @@ export default class Grid extends Component {
           transformStyle: "preserve-3d",
           transformOrigin: `${size / side * player.position.x}em ${size /
             side *
-            player.position.y -
+            player.position.y +
             size / side}em`,
-          transform: `scaleX(2) scaleY(2)  rotate3D(1,0,0, 60deg) rotateZ(-${player.orientationDeg}deg)`,
+          transform: `scaleX(4) scaleY(4) rotateX(60deg) rotateZ(-${player.orientationDeg}deg)   `,
           transition: "transform 1s"
         }}
       >
@@ -60,6 +60,7 @@ export default class Grid extends Component {
           return (
             <Cell
               {...this.props}
+              player={player}
               size={size}
               key={i}
               handleMouseMove={(e, cell) => {

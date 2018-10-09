@@ -30,7 +30,8 @@ export default class Player extends Component {
           transform: `translate3d(${size / side * player.position.x}em,${size /
             side *
             player.position.y +
-            size / side}em,1em) rotateX(-90deg) rotateY(${orientationRad}deg)`,
+            size /
+              side}em,1em) rotateX(-90deg) rotateY(${-player.orientationDeg}deg)`,
           transformOrigin: `50% 50%`,
           textAlign: "center",
           verticalAlign: "center",

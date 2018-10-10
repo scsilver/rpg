@@ -27,11 +27,13 @@ export default class Player extends Component {
         style={{
           position: "relative",
           maxHeight: `${size / side}` + `em`,
-          transform: `translate3d(${size / side * player.position.x}em,${size /
+          transform: `translate3d(${size /
             side *
-            player.position.y +
+            (player.position.x + 0.5)}em,${size /
+            side *
+            (player.position.y - 0.5) +
             size /
-              side}em,1em) rotateX(-90deg) rotateY(${-player.orientationDeg}deg)`,
+              side}em,2em) rotateX(-90deg) rotateY(${-player.orientationDeg}deg)`,
           transformOrigin: `50% 50%`,
           textAlign: "center",
           verticalAlign: "center",

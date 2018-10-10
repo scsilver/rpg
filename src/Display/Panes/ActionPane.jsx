@@ -5,6 +5,8 @@ import { observer, Observer } from "mobx-react";
 
 export default class ActionPane extends Component {
   render() {
-    return <Grid {...this.props} />;
+    const { player } = this.props;
+
+    return <Grid {...this.props} player={this.props.player.get()} />;
   }
 }

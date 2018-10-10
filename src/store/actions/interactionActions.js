@@ -10,6 +10,7 @@ const addInteractionActions = state => {
   });
 
   state.turnPlayer = action(movementOrientation => {
+    debugger;
     state.updatePlayer({
       orientationDeg: movementOrientation % 360
     });

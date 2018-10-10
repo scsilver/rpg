@@ -30,8 +30,7 @@ const Sprite = ({ emoji, options, size, sizer, player }) => {
         transformStyle: "preserve-3d",
         transition: `transform 1s`,
         transformOrigin: "50% 50%",
-        transform: `translate3d(0em,0,0.8em) rotateZ(${player.orientationDeg -
-          180}deg) rotateX(-90deg) `
+        transform: `translate3d(0em,0,1em) rotateZ(${player.orientationDeg}deg) rotateX(-90deg) `
       }}
     >
       {emoji}

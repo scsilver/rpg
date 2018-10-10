@@ -12,7 +12,8 @@ export default class Grid extends Component {
     this.state = {};
   }
   static defaultProps = {
-    world: { cells: [] }
+    world: { cells: [] },
+    player: { position: { x: 0, y: 0 }, orientationDeg: 0 }
   };
 
   handleMouseMoveOver = _.debounce((event, cell) => {
@@ -20,10 +21,11 @@ export default class Grid extends Component {
     this.setState({ mouse, tooltip: true, cell: cell });
   }, 500);
   render() {
+    const { player } = this.props;
     const cellCount = this.props.game.world.options.amount;
     const sideCellCount = this.props.game.world.options.side;
     const side = this.props.game.world.options.side;
-    const player = this.props.player.get();
+
     const size = 50;
     return (
       <div
@@ -34,11 +36,13 @@ export default class Grid extends Component {
           display: "flex",
           flexWrap: "wrap",
           transformStyle: "preserve-3d",
-          transformOrigin: `${size / side * player.position.x}em ${size /
+          transformOrigin: `${size /
             side *
-            player.position.y +
-            size / side}em`,
-          transform: `scaleX(4) scaleY(4) rotateX(60deg) rotateZ(-${player.orientationDeg}deg)   `,
+            (player.position.x + 0.5)}em ${size /
+            side *
+            (player.position.y - 0.5) +
+            size / side}em 1em`,
+          transform: `perspective(1em) scaleX(20) scaleY(20) rotateX(80deg) rotateZ(-${player.orientationDeg}deg) `,
           transition: "transform 1s"
         }}
       >
@@ -47,7 +51,8 @@ export default class Grid extends Component {
           style={{
             display: "flex",
             width: "100%",
-            justifyContent: "flex-start"
+            justifyContent: "flex-start",
+            height: "0em"
           }}
         >
           <Player
